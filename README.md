@@ -21,10 +21,12 @@ A comprehensive WooCommerce plugin for generating professional PDF invoices, pac
 ### From GitHub
 
 1. Clone this repository or download the ZIP
-2. Run `composer install --no-dev` to install dependencies
+2. **IMPORTANT**: Run `composer install --no-dev` to install dependencies (Dompdf)
 3. Upload to `/wp-content/plugins/oli-pdf-invoices-packing-slips/`
 4. Activate through WordPress admin
 5. Configure at WooCommerce > PDF Documents
+
+> **Note**: The plugin will not work without Composer dependencies. Make sure to run `composer install --no-dev` before activating.
 
 ### Requirements
 
