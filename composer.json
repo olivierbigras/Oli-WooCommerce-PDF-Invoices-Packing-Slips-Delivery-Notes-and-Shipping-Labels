@@ -1,0 +1,25 @@
+{
+    "name": "bigrat95/oli-pdf-invoices-packing-slips",
+    "description": "PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Olivier Bigras",
+            "homepage": "https://olivierbigras.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "dompdf/dompdf": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Oli_PDF\\": "includes/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
