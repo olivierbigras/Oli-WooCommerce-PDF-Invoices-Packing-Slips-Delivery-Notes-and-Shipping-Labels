@@ -4,7 +4,7 @@ Tags: woocommerce, pdf, invoice, packing slip, shipping label
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 9.0
@@ -20,7 +20,7 @@ Generate professional PDF invoices, packing slips, delivery notes, and shipping 
 
 * **Sequential Invoice Numbering** - Automatic invoice numbering with customizable prefix, suffix, and padding
 * **Email Attachments** - Automatically attach invoices to customer emails
-* **Multiple Document Types** - Generate invoices, packing slips, delivery notes, and shipping labels
+* **Multiple Document Types** - Generate invoices, packing slips, delivery notes, shipping labels, and credit notes
 * **Bulk Actions** - Download multiple PDFs at once from the orders list
 * **Customer Access** - Customers can download their invoices from My Account
 * **Customizable Templates** - Add your logo, company info, VAT/tax numbers, and footer text
@@ -37,7 +37,8 @@ Generate professional PDF invoices, packing slips, delivery notes, and shipping 
 1. **Invoices** - Professional invoices with sequential numbering
 2. **Packing Slips** - Simple packing lists for fulfillment
 3. **Delivery Notes** - Delivery notes with signature field
-4. **Shipping Labels** - Printable shipping labels
+4. **Shipping Labels** - Printable shipping labels with A4, Letter, 4x6, 4x4, custom sizes, and multiple labels per sheet
+5. **Credit Notes** - Generated when an order is refunded
 
 = Easy to Use =
 
@@ -95,6 +96,14 @@ Yes, the plugin is fully compatible with WooCommerce HPOS.
 
 == Changelog ==
 
+= 0.1.1 - 2026-10-20 =
+* Shipping label size presets (A4, Letter, 4x6, 4x4, custom) and multiple labels per sheet
+* Color pickers for template primary and secondary colors
+* Credit notes for refunds
+* Optimized local product images in PDFs
+* Migration verified against WebToffee 5.x option names and order meta
+* Release zip includes vendor/ so Composer is not required on the server
+
 = 0.1.0 - 2026-10-19 =
 * Initial release
 * Sequential invoice numbering with prefix/suffix/padding
@@ -109,6 +118,9 @@ Yes, the plugin is fully compatible with WooCommerce HPOS.
 
 == Upgrade Notice ==
 
+= 0.1.1 =
+Adds credit notes, label presets, colors, and a corrected WebToffee migration.
+
 = 0.1.0 =
 Initial release.
 
@@ -118,6 +130,7 @@ Initial release.
 
 **Actions:**
 * `oli_pdf_invoice_generated` - Fired when an invoice is generated
+* `oli_pdf_credit_note_generated` - Fired when a credit note is generated
 
 **Filters:**
 * All WordPress standard filters apply to content

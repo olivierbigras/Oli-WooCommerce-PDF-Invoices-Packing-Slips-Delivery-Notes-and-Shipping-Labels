@@ -5,7 +5,7 @@
 **Version**: 0.1.0  
 **Date**: October 19, 2026  
 **Status**: Ready for Testing & Deployment  
-**Pull Request**: https://github.com/bigrat95/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/pull/1
+**Pull Request**: https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/pull/1
 
 ## Overview
 
@@ -303,7 +303,7 @@ All criteria met for v0.1.0:
 
 The Oli PDF Invoices plugin is **complete and ready for testing**. All core features have been implemented with proper security, standards compliance, and documentation. The plugin provides a solid, production-ready alternative to WebToffee with clean code, no upsells, and full feature parity for the free version.
 
-**Pull Request**: https://github.com/bigrat95/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/pull/1
+**Pull Request**: https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/pull/1
 
 **Next Action**: Install Composer dependencies and run comprehensive tests per TESTING.md guide.
 

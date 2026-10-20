@@ -1,6 +1,6 @@
 <?php
 /**
- * Email attachments
+ * Email attachments.
  *
  * @package Oli_PDF
  */
@@ -10,23 +10,23 @@ namespace Oli_PDF;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Emails class
+ * Emails class.
  */
 class Emails {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_email_attachments', array( $this, 'attach_pdf' ), 10, 3 );
 	}
 
 	/**
-	 * Attach PDF to emails
+	 * Attach PDF to emails.
 	 *
 	 * @param array  $attachments Attachments.
-	 * @param string $email_id Email ID.
-	 * @param object $order Order object.
+	 * @param string $email_id    Email ID.
+	 * @param object $order       Order object.
 	 * @return array
 	 */
 	public function attach_pdf( $attachments, $email_id, $order ) {
@@ -34,8 +34,16 @@ class Emails {
 			return $attachments;
 		}
 
+		if ( 'customer_refunded_order' === $email_id && 'yes' === get_option( 'oli_pdf_enable_credit_notes', 'yes' ) ) {
+			Numbering::generate_credit_note_for_order( $order );
+			$path = $this->write_temp_pdf( $order, 'credit-note' );
+			if ( $path ) {
+				$attachments[] = $path;
+			}
+			return $attachments;
+		}
+
 		$attach_to = get_option( 'oli_pdf_invoice_email_attach', array( 'customer_invoice', 'customer_completed_order' ) );
-		
 		if ( ! is_array( $attach_to ) ) {
 			$attach_to = array();
 		}
@@ -46,33 +54,15 @@ class Emails {
 
 		$invoice_number = Numbering::get_invoice_number( $order );
 		if ( ! $invoice_number ) {
-			if ( Numbering::should_generate_invoice( $order ) ) {
-				Numbering::generate_for_order( $order );
-			} else {
+			if ( ! Numbering::should_generate_invoice( $order ) ) {
 				return $attachments;
 			}
+			Numbering::generate_for_order( $order );
 		}
 
-		$pdf = Generator::get_pdf_for_email( $order->get_id(), 'invoice' );
-		if ( ! $pdf ) {
-			return $attachments;
-		}
-
-		$upload_dir = wp_upload_dir();
-		$temp_dir   = trailingslashit( $upload_dir['basedir'] ) . 'oli-pdf-temp/';
-
-		if ( ! file_exists( $temp_dir ) ) {
-			wp_mkdir_p( $temp_dir );
-		}
-
-		$filename = 'invoice-' . $order->get_order_number() . '.pdf';
-		$filepath = $temp_dir . $filename;
-
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-		file_put_contents( $filepath, $pdf );
-
-		if ( file_exists( $filepath ) ) {
-			$attachments[] = $filepath;
+		$path = $this->write_temp_pdf( $order, 'invoice' );
+		if ( $path ) {
+			$attachments[] = $path;
 		}
 
 		add_action( 'woocommerce_email_after_order_table', array( $this, 'cleanup_temp_files' ), 10, 1 );
@@ -81,11 +71,56 @@ class Emails {
 	}
 
 	/**
-	 * Cleanup temp files
+	 * Write a temporary PDF file.
+	 *
+	 * @param \WC_Order $order Order.
+	 * @param string    $type  Document type.
+	 * @return string
+	 */
+	private function write_temp_pdf( $order, $type ) {
+		$pdf = Generator::get_pdf_for_email( $order->get_id(), $type );
+		if ( ! $pdf ) {
+			return '';
+		}
+
+		$temp_dir = $this->get_temp_dir();
+		if ( ! $temp_dir ) {
+			return '';
+		}
+
+		$filename = $type . '-' . $order->get_order_number() . '.pdf';
+		$filepath = $temp_dir . $filename;
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- temporary PDF for mailer.
+		file_put_contents( $filepath, $pdf );
+
+		return file_exists( $filepath ) ? $filepath : '';
+	}
+
+	/**
+	 * Get temp directory.
+	 *
+	 * @return string
+	 */
+	private function get_temp_dir() {
+		$upload_dir = wp_upload_dir();
+		$temp_dir   = trailingslashit( $upload_dir['basedir'] ) . 'oli-pdf-temp/';
+
+		if ( ! file_exists( $temp_dir ) ) {
+			wp_mkdir_p( $temp_dir );
+		}
+
+		return file_exists( $temp_dir ) ? $temp_dir : '';
+	}
+
+	/**
+	 * Cleanup temp files older than one hour.
 	 *
 	 * @param \WC_Order $order Order object.
 	 */
 	public function cleanup_temp_files( $order ) {
+		unset( $order );
+
 		$upload_dir = wp_upload_dir();
 		$temp_dir   = trailingslashit( $upload_dir['basedir'] ) . 'oli-pdf-temp/';
 
@@ -94,10 +129,13 @@ class Emails {
 		}
 
 		$files = glob( $temp_dir . '*.pdf' );
+		if ( ! $files ) {
+			return;
+		}
+
 		foreach ( $files as $file ) {
-			if ( is_file( $file ) && time() - filemtime( $file ) > 3600 ) {
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
-				unlink( $file );
+			if ( is_file( $file ) && ( time() - filemtime( $file ) ) > 3600 ) {
+				wp_delete_file( $file );
 			}
 		}
 	}

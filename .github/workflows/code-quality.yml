@@ -2,59 +2,63 @@ name: Code Quality
 
 on:
   push:
-    branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop ]
 
 jobs:
   php-lint:
     name: PHP Lint
     runs-on: ubuntu-latest
-    
     strategy:
       matrix:
-        php-version: ['7.4', '8.0', '8.1', '8.2']
-    
+        php-version: ['7.4', '8.0', '8.1', '8.2', '8.3']
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
-      
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-      
+          tools: composer
       - name: PHP Lint
-        run: find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+        run: find . -name "*.php" ! -path "./vendor/*" ! -path "./dist/*" -print0 | xargs -0 -n1 php -l
 
   phpcs:
     name: PHPCS
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
           coverage: none
-          tools: cs2pr
-      
+          tools: composer
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-      
-      - name: Install PHPCS and WordPress standards
-        run: |
-          composer global require squizlabs/php_codesniffer
-          composer global require wp-coding-standards/wpcs
-          composer global require phpcompatibility/phpcompatibility-wp
-          ~/.composer/vendor/bin/phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs,~/.composer/vendor/phpcompatibility/php-compatibility,~/.composer/vendor/phpcompatibility/phpcompatibility-paragonie,~/.composer/vendor/phpcompatibility/phpcompatibility-wp
-      
+        run: composer install --prefer-dist --no-progress --no-security-blocking
       - name: Run PHPCS
-        run: ~/.composer/vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle . | cs2pr
+        run: vendor/bin/phpcs --standard=phpcs.xml
+
+  webtoffee-format-tests:
+    name: WebToffee format tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+      - name: Run standalone migration format tests
+        run: php tests/run-webtoffee-format-tests.php
+
+  release-zip:
+    name: Release zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+      - name: Build release zip with vendor
+        run: bash bin/build-release.sh
+      - name: Confirm vendor is inside the zip
+        run: unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/autoload.php

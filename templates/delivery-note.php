@@ -10,10 +10,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$company_name   = get_option( 'oli_pdf_company_name', '' );
+$company_name    = get_option( 'oli_pdf_company_name', '' );
 $company_address = get_option( 'oli_pdf_company_address', '' );
-$logo_url       = get_option( 'oli_pdf_logo_url', '' );
-$show_sku       = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+$primary         = \Oli_PDF\Generator::get_primary_color();
+$secondary       = \Oli_PDF\Generator::get_secondary_color();
+$logo_src        = \Oli_PDF\Generator::get_logo_src();
 
 ?>
 <!DOCTYPE html>
@@ -40,6 +42,7 @@ $show_sku       = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
 			font-size: 20px;
 			font-weight: bold;
 			margin: 20px 0;
+			color: <?php echo esc_attr( $primary ); ?>;
 		}
 		.products-table {
 			width: 100%;
@@ -47,10 +50,11 @@ $show_sku       = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
 			margin: 20px 0;
 		}
 		.products-table th {
-			background: #f5f5f5;
+			background: <?php echo esc_attr( $secondary ); ?>;
+			color: <?php echo esc_attr( $primary ); ?>;
 			padding: 10px;
 			text-align: left;
-			border-bottom: 2px solid #ddd;
+			border-bottom: 2px solid <?php echo esc_attr( $primary ); ?>;
 		}
 		.products-table td {
 			padding: 10px;
@@ -69,8 +73,8 @@ $show_sku       = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
 </head>
 <body>
 	<div class="header">
-		<?php if ( $logo_url ) : ?>
-			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
+		<?php if ( $logo_src ) : ?>
+			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
 		<?php endif; ?>
 	</div>
 

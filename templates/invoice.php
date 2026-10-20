@@ -1,8 +1,8 @@
 <?php
 /**
- * Invoice Template
+ * Invoice template.
  *
- * This template can be overridden by copying it to yourtheme/oli-pdf-templates/invoice.php
+ * Override: yourtheme/oli-pdf-templates/invoice.php
  *
  * @package Oli_PDF
  * @var WC_Order $order
@@ -10,123 +10,58 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$invoice_number = $order->get_meta( '_oli_pdf_invoice_number' );
-$invoice_date   = $order->get_meta( '_oli_pdf_invoice_date' );
-$company_name   = get_option( 'oli_pdf_company_name', '' );
+$invoice_number  = $order->get_meta( '_oli_pdf_invoice_number' );
+$invoice_date    = $order->get_meta( '_oli_pdf_invoice_date' );
+$company_name    = get_option( 'oli_pdf_company_name', '' );
 $company_address = get_option( 'oli_pdf_company_address', '' );
-$vat_number     = get_option( 'oli_pdf_vat_number', '' );
-$tax_number     = get_option( 'oli_pdf_tax_number', '' );
-$logo_url       = get_option( 'oli_pdf_logo_url', '' );
-$footer_text    = get_option( 'oli_pdf_footer_text', '' );
-$show_sku       = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
-$show_weight    = 'yes' === get_option( 'oli_pdf_show_weight', 'yes' );
-$show_tax       = 'yes' === get_option( 'oli_pdf_show_tax_breakdown', 'yes' );
-$show_shipping  = 'yes' === get_option( 'oli_pdf_show_shipping', 'yes' );
-$show_payment   = 'yes' === get_option( 'oli_pdf_show_payment_method', 'yes' );
-$show_note      = 'yes' === get_option( 'oli_pdf_show_customer_note', 'yes' );
-$show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
-$show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
-
+$vat_number      = get_option( 'oli_pdf_vat_number', '' );
+$tax_number      = get_option( 'oli_pdf_tax_number', '' );
+$footer_text     = get_option( 'oli_pdf_footer_text', '' );
+$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+$show_tax        = 'yes' === get_option( 'oli_pdf_show_tax_breakdown', 'yes' );
+$show_shipping   = 'yes' === get_option( 'oli_pdf_show_shipping', 'yes' );
+$show_payment    = 'yes' === get_option( 'oli_pdf_show_payment_method', 'yes' );
+$show_note       = 'yes' === get_option( 'oli_pdf_show_customer_note', 'yes' );
+$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
+$show_meta       = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
+$primary         = \Oli_PDF\Generator::get_primary_color();
+$secondary       = \Oli_PDF\Generator::get_secondary_color();
+$logo_src        = \Oli_PDF\Generator::get_logo_src();
+$image_size      = \Oli_PDF\Generator::get_product_image_size();
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php esc_html_e( 'Invoice', 'oli-pdf-invoices-packing-slips' ); ?></title>
 	<style>
-		body {
-			font-family: 'DejaVu Sans', sans-serif;
-			font-size: 12px;
-			line-height: 1.5;
-			color: #333;
-		}
-		.header {
-			margin-bottom: 30px;
-			overflow: hidden;
-		}
-		.logo {
-			float: left;
-			max-width: 200px;
-			max-height: 100px;
-		}
-		.company-info {
-			float: right;
-			text-align: right;
-		}
-		.invoice-title {
-			font-size: 24px;
-			font-weight: bold;
-			margin: 20px 0;
-			clear: both;
-		}
-		.invoice-details {
-			margin-bottom: 20px;
-		}
-		.invoice-details table {
-			width: 100%;
-		}
-		.invoice-details td {
-			padding: 5px;
-			vertical-align: top;
-		}
-		.invoice-details .left {
-			width: 50%;
-		}
-		.invoice-details .right {
-			width: 50%;
-			text-align: right;
-		}
-		.products-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin: 20px 0;
-		}
-		.products-table th {
-			background: #f5f5f5;
-			padding: 10px;
-			text-align: left;
-			border-bottom: 2px solid #ddd;
-		}
-		.products-table td {
-			padding: 10px;
-			border-bottom: 1px solid #eee;
-		}
-		.totals-table {
-			width: 100%;
-			margin-top: 20px;
-		}
-		.totals-table td {
-			padding: 5px;
-			text-align: right;
-		}
-		.totals-table .total-label {
-			font-weight: bold;
-		}
-		.totals-table .grand-total {
-			font-size: 16px;
-			font-weight: bold;
-			border-top: 2px solid #333;
-			padding-top: 10px;
-		}
-		.footer {
-			margin-top: 40px;
-			padding-top: 20px;
-			border-top: 1px solid #ddd;
-			text-align: center;
-			font-size: 10px;
-		}
-		.text-right {
-			text-align: right;
-		}
+		body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; line-height: 1.5; color: #333; }
+		.header { margin-bottom: 30px; overflow: hidden; }
+		.logo { float: left; max-width: 200px; max-height: 100px; }
+		.company-info { float: right; text-align: right; }
+		.invoice-title { font-size: 24px; font-weight: bold; margin: 20px 0; clear: both; color: <?php echo esc_attr( $primary ); ?>; }
+		.invoice-details { margin-bottom: 20px; }
+		.invoice-details table { width: 100%; }
+		.invoice-details td { padding: 5px; vertical-align: top; }
+		.invoice-details .left { width: 50%; }
+		.invoice-details .right { width: 50%; text-align: right; }
+		.products-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+		.products-table th { background: <?php echo esc_attr( $secondary ); ?>; color: <?php echo esc_attr( $primary ); ?>; padding: 10px; text-align: left; border-bottom: 2px solid <?php echo esc_attr( $primary ); ?>; }
+		.products-table td { padding: 10px; border-bottom: 1px solid #eee; }
+		.product-image { width: <?php echo (int) $image_size; ?>px; height: <?php echo (int) $image_size; ?>px; object-fit: contain; }
+		.totals-table { width: 100%; margin-top: 20px; }
+		.totals-table td { padding: 5px; text-align: right; }
+		.totals-table .total-label { font-weight: bold; }
+		.totals-table .grand-total { font-size: 16px; font-weight: bold; border-top: 2px solid <?php echo esc_attr( $primary ); ?>; padding-top: 10px; color: <?php echo esc_attr( $primary ); ?>; }
+		.footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 10px; }
+		.text-right { text-align: right; }
 	</style>
 </head>
 <body>
 	<div class="header">
-		<?php if ( $logo_url ) : ?>
-			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
+		<?php if ( $logo_src ) : ?>
+			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
 		<?php endif; ?>
-		
 		<div class="company-info">
 			<?php if ( $company_name ) : ?>
 				<strong><?php echo esc_html( $company_name ); ?></strong><br>
@@ -143,9 +78,7 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 		</div>
 	</div>
 
-	<div class="invoice-title">
-		<?php esc_html_e( 'INVOICE', 'oli-pdf-invoices-packing-slips' ); ?>
-	</div>
+	<div class="invoice-title"><?php esc_html_e( 'INVOICE', 'oli-pdf-invoices-packing-slips' ); ?></div>
 
 	<div class="invoice-details">
 		<table>
@@ -162,9 +95,9 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 				</td>
 				<td class="right">
 					<strong><?php esc_html_e( 'Invoice Number:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $invoice_number ); ?><br>
-					<strong><?php esc_html_e( 'Invoice Date:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invoice_date ) ) ); ?><br>
+					<strong><?php esc_html_e( 'Invoice Date:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $invoice_date ? date_i18n( get_option( 'date_format' ), strtotime( $invoice_date ) ) : '' ); ?><br>
 					<strong><?php esc_html_e( 'Order Number:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $order->get_order_number() ); ?><br>
-					<strong><?php esc_html_e( 'Order Date:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) ); ?>
+					<strong><?php esc_html_e( 'Order Date:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '' ); ?>
 				</td>
 			</tr>
 		</table>
@@ -173,6 +106,9 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 	<table class="products-table">
 		<thead>
 			<tr>
+				<?php if ( $show_images ) : ?>
+					<th><?php esc_html_e( 'Image', 'oli-pdf-invoices-packing-slips' ); ?></th>
+				<?php endif; ?>
 				<th><?php esc_html_e( 'Product', 'oli-pdf-invoices-packing-slips' ); ?></th>
 				<?php if ( $show_sku ) : ?>
 					<th><?php esc_html_e( 'SKU', 'oli-pdf-invoices-packing-slips' ); ?></th>
@@ -186,6 +122,16 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 			<?php foreach ( $order->get_items() as $item ) : ?>
 				<?php $product = $item->get_product(); ?>
 				<tr>
+					<?php if ( $show_images ) : ?>
+						<td>
+							<?php
+							$image_src = \Oli_PDF\Generator::get_product_image_src( $product );
+							if ( $image_src ) :
+								?>
+								<img src="<?php echo esc_attr( $image_src ); ?>" class="product-image" alt="">
+							<?php endif; ?>
+						</td>
+					<?php endif; ?>
 					<td>
 						<?php echo esc_html( $item->get_name() ); ?>
 						<?php if ( $show_meta && $item->get_meta_data() ) : ?>
@@ -193,10 +139,10 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 							<small>
 								<?php
 								foreach ( $item->get_meta_data() as $meta ) {
-									if ( strpos( $meta->key, '_' ) === 0 ) {
+									if ( 0 === strpos( $meta->key, '_' ) ) {
 										continue;
 									}
-									echo esc_html( $meta->display_key ) . ': ' . esc_html( $meta->display_value ) . '<br>';
+									echo esc_html( $meta->display_key ) . ': ' . esc_html( wp_strip_all_tags( (string) $meta->display_value ) ) . '<br>';
 								}
 								?>
 							</small>
@@ -218,14 +164,12 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 			<td class="total-label"><?php esc_html_e( 'Subtotal:', 'oli-pdf-invoices-packing-slips' ); ?></td>
 			<td><?php echo wp_kses_post( wc_price( $order->get_subtotal(), array( 'currency' => $order->get_currency() ) ) ); ?></td>
 		</tr>
-		
 		<?php if ( $show_shipping && $order->get_shipping_total() > 0 ) : ?>
 			<tr>
 				<td class="total-label"><?php esc_html_e( 'Shipping:', 'oli-pdf-invoices-packing-slips' ); ?></td>
 				<td><?php echo wp_kses_post( wc_price( $order->get_shipping_total(), array( 'currency' => $order->get_currency() ) ) ); ?></td>
 			</tr>
 		<?php endif; ?>
-
 		<?php if ( $show_tax ) : ?>
 			<?php foreach ( $order->get_tax_totals() as $tax ) : ?>
 				<tr>
@@ -233,15 +177,12 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 					<td><?php echo wp_kses_post( wc_price( $tax->amount, array( 'currency' => $order->get_currency() ) ) ); ?></td>
 				</tr>
 			<?php endforeach; ?>
-		<?php else : ?>
-			<?php if ( $order->get_total_tax() > 0 ) : ?>
-				<tr>
-					<td class="total-label"><?php esc_html_e( 'Tax:', 'oli-pdf-invoices-packing-slips' ); ?></td>
-					<td><?php echo wp_kses_post( wc_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) ); ?></td>
-				</tr>
-			<?php endif; ?>
+		<?php elseif ( $order->get_total_tax() > 0 ) : ?>
+			<tr>
+				<td class="total-label"><?php esc_html_e( 'Tax:', 'oli-pdf-invoices-packing-slips' ); ?></td>
+				<td><?php echo wp_kses_post( wc_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) ); ?></td>
+			</tr>
 		<?php endif; ?>
-
 		<tr class="grand-total">
 			<td class="total-label"><?php esc_html_e( 'Total:', 'oli-pdf-invoices-packing-slips' ); ?></td>
 			<td><?php echo wp_kses_post( wc_price( $order->get_total(), array( 'currency' => $order->get_currency() ) ) ); ?></td>
@@ -249,23 +190,15 @@ $show_meta      = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
 	</table>
 
 	<?php if ( $show_payment && $order->get_payment_method_title() ) : ?>
-		<p>
-			<strong><?php esc_html_e( 'Payment Method:', 'oli-pdf-invoices-packing-slips' ); ?></strong>
-			<?php echo esc_html( $order->get_payment_method_title() ); ?>
-		</p>
+		<p><strong><?php esc_html_e( 'Payment Method:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $order->get_payment_method_title() ); ?></p>
 	<?php endif; ?>
 
 	<?php if ( $show_note && $order->get_customer_note() ) : ?>
-		<p>
-			<strong><?php esc_html_e( 'Customer Note:', 'oli-pdf-invoices-packing-slips' ); ?></strong><br>
-			<?php echo esc_html( $order->get_customer_note() ); ?>
-		</p>
+		<p><strong><?php esc_html_e( 'Customer Note:', 'oli-pdf-invoices-packing-slips' ); ?></strong><br><?php echo esc_html( $order->get_customer_note() ); ?></p>
 	<?php endif; ?>
 
 	<?php if ( $footer_text ) : ?>
-		<div class="footer">
-			<?php echo wp_kses_post( nl2br( $footer_text ) ); ?>
-		</div>
+		<div class="footer"><?php echo wp_kses_post( nl2br( $footer_text ) ); ?></div>
 	<?php endif; ?>
 </body>
 </html>

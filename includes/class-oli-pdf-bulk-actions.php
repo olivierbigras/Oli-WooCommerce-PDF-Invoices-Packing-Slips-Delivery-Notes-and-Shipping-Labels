@@ -1,6 +1,6 @@
 <?php
 /**
- * Bulk actions for orders
+ * Bulk actions for orders.
  *
  * @package Oli_PDF
  */
@@ -10,12 +10,12 @@ namespace Oli_PDF;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Bulk_Actions class
+ * Bulk_Actions class.
  */
 class Bulk_Actions {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_filter( 'bulk_actions-woocommerce_page_wc-orders', array( $this, 'add_bulk_actions' ) );
@@ -25,29 +25,39 @@ class Bulk_Actions {
 	}
 
 	/**
-	 * Add bulk actions
+	 * Add bulk actions.
 	 *
 	 * @param array $actions Actions.
 	 * @return array
 	 */
 	public function add_bulk_actions( $actions ) {
-		$actions['oli_pdf_download_invoices']      = __( 'Download Invoices (PDF)', 'oli-pdf-invoices-packing-slips' );
-		$actions['oli_pdf_download_packing_slips'] = __( 'Download Packing Slips (PDF)', 'oli-pdf-invoices-packing-slips' );
-		$actions['oli_pdf_download_delivery_notes'] = __( 'Download Delivery Notes (PDF)', 'oli-pdf-invoices-packing-slips' );
+		$actions['oli_pdf_download_invoices']        = __( 'Download Invoices (PDF)', 'oli-pdf-invoices-packing-slips' );
+		$actions['oli_pdf_download_packing_slips']   = __( 'Download Packing Slips (PDF)', 'oli-pdf-invoices-packing-slips' );
+		$actions['oli_pdf_download_delivery_notes']  = __( 'Download Delivery Notes (PDF)', 'oli-pdf-invoices-packing-slips' );
+		$actions['oli_pdf_download_shipping_labels'] = __( 'Download Shipping Labels (PDF)', 'oli-pdf-invoices-packing-slips' );
+		$actions['oli_pdf_download_credit_notes']    = __( 'Download Credit Notes (PDF)', 'oli-pdf-invoices-packing-slips' );
 
 		return $actions;
 	}
 
 	/**
-	 * Handle bulk actions
+	 * Handle bulk actions.
 	 *
 	 * @param string $redirect_to Redirect URL.
-	 * @param string $action Action.
-	 * @param array  $post_ids Post IDs.
+	 * @param string $action      Action.
+	 * @param array  $post_ids    Post IDs.
 	 * @return string
 	 */
 	public function handle_bulk_actions( $redirect_to, $action, $post_ids ) {
-		if ( ! in_array( $action, array( 'oli_pdf_download_invoices', 'oli_pdf_download_packing_slips', 'oli_pdf_download_delivery_notes' ), true ) ) {
+		$type_map = array(
+			'oli_pdf_download_invoices'        => 'invoice',
+			'oli_pdf_download_packing_slips'   => 'packing-slip',
+			'oli_pdf_download_delivery_notes'  => 'delivery-note',
+			'oli_pdf_download_shipping_labels' => 'shipping-label',
+			'oli_pdf_download_credit_notes'    => 'credit-note',
+		);
+
+		if ( ! isset( $type_map[ $action ] ) ) {
 			return $redirect_to;
 		}
 
@@ -55,24 +65,16 @@ class Bulk_Actions {
 			return $redirect_to;
 		}
 
-		$type_map = array(
-			'oli_pdf_download_invoices'      => 'invoice',
-			'oli_pdf_download_packing_slips' => 'packing-slip',
-			'oli_pdf_download_delivery_notes' => 'delivery-note',
-		);
-
-		$type = $type_map[ $action ];
-
-		$this->generate_bulk_pdf( $post_ids, $type );
+		$this->generate_bulk_pdf( $post_ids, $type_map[ $action ] );
 
 		return $redirect_to;
 	}
 
 	/**
-	 * Generate bulk PDF
+	 * Generate bulk PDF zip.
 	 *
 	 * @param array  $order_ids Order IDs.
-	 * @param string $type Document type.
+	 * @param string $type      Document type.
 	 */
 	private function generate_bulk_pdf( $order_ids, $type ) {
 		require_once ABSPATH . 'wp-admin/includes/class-pclzip.php';
@@ -86,9 +88,8 @@ class Bulk_Actions {
 
 		$zip_filename = 'bulk-' . $type . '-' . time() . '.zip';
 		$zip_filepath = $temp_dir . $zip_filename;
-
-		$archive = new \PclZip( $zip_filepath );
-		$files   = array();
+		$archive      = new \PclZip( $zip_filepath );
+		$files        = array();
 
 		foreach ( $order_ids as $order_id ) {
 			$order = wc_get_order( $order_id );
@@ -97,14 +98,16 @@ class Bulk_Actions {
 			}
 
 			if ( 'invoice' === $type ) {
-				$invoice_number = Numbering::get_invoice_number( $order );
-				if ( ! $invoice_number ) {
-					if ( Numbering::should_generate_invoice( $order ) ) {
-						Numbering::generate_for_order( $order );
-					} else {
+				if ( ! Numbering::get_invoice_number( $order ) ) {
+					if ( ! Numbering::should_generate_invoice( $order ) ) {
 						continue;
 					}
+					Numbering::generate_for_order( $order );
 				}
+			}
+
+			if ( 'credit-note' === $type && ! Numbering::get_credit_note_number( $order ) ) {
+				continue;
 			}
 
 			$pdf = Generator::get_pdf_for_email( $order->get_id(), $type );
@@ -115,7 +118,7 @@ class Bulk_Actions {
 			$filename = $type . '-' . $order->get_order_number() . '.pdf';
 			$filepath = $temp_dir . $filename;
 
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- temporary bulk export.
 			file_put_contents( $filepath, $pdf );
 
 			if ( file_exists( $filepath ) ) {
@@ -132,16 +135,14 @@ class Bulk_Actions {
 		header( 'Content-Type: application/zip' );
 		header( 'Content-Disposition: attachment; filename="' . $zip_filename . '"' );
 		header( 'Content-Length: ' . filesize( $zip_filepath ) );
-		
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- streaming the generated zip.
 		readfile( $zip_filepath );
 
 		foreach ( $files as $file ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
-			unlink( $file );
+			wp_delete_file( $file );
 		}
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
-		unlink( $zip_filepath );
+		wp_delete_file( $zip_filepath );
 
 		exit;
 	}

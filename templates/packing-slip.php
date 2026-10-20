@@ -10,12 +10,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$company_name   = get_option( 'oli_pdf_company_name', '' );
+$company_name    = get_option( 'oli_pdf_company_name', '' );
 $company_address = get_option( 'oli_pdf_company_address', '' );
-$logo_url       = get_option( 'oli_pdf_logo_url', '' );
-$show_sku       = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
-$show_weight    = 'yes' === get_option( 'oli_pdf_show_weight', 'yes' );
-$show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
+$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+$show_weight     = 'yes' === get_option( 'oli_pdf_show_weight', 'yes' );
+$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
+$primary         = \Oli_PDF\Generator::get_primary_color();
+$secondary       = \Oli_PDF\Generator::get_secondary_color();
+$logo_src        = \Oli_PDF\Generator::get_logo_src();
+$image_size      = \Oli_PDF\Generator::get_product_image_size();
 
 ?>
 <!DOCTYPE html>
@@ -48,6 +51,7 @@ $show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
 			font-weight: bold;
 			margin: 20px 0;
 			clear: both;
+			color: <?php echo esc_attr( $primary ); ?>;
 		}
 		.addresses {
 			margin: 20px 0;
@@ -66,11 +70,13 @@ $show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
 			margin: 20px 0;
 		}
 		.products-table th {
-			background: #f5f5f5;
+			background: <?php echo esc_attr( $secondary ); ?>;
+			color: <?php echo esc_attr( $primary ); ?>;
 			padding: 10px;
 			text-align: left;
-			border-bottom: 2px solid #ddd;
+			border-bottom: 2px solid <?php echo esc_attr( $primary ); ?>;
 		}
+		.product-image { width: <?php echo (int) $image_size; ?>px; height: <?php echo (int) $image_size; ?>px; }
 		.products-table td {
 			padding: 10px;
 			border-bottom: 1px solid #eee;
@@ -82,8 +88,8 @@ $show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
 </head>
 <body>
 	<div class="header">
-		<?php if ( $logo_url ) : ?>
-			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
+		<?php if ( $logo_src ) : ?>
+			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
 		<?php endif; ?>
 		
 		<div class="company-info">
@@ -123,6 +129,9 @@ $show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
 	<table class="products-table">
 		<thead>
 			<tr>
+				<?php if ( $show_images ) : ?>
+					<th><?php esc_html_e( 'Image', 'oli-pdf-invoices-packing-slips' ); ?></th>
+				<?php endif; ?>
 				<th><?php esc_html_e( 'Product', 'oli-pdf-invoices-packing-slips' ); ?></th>
 				<?php if ( $show_sku ) : ?>
 					<th><?php esc_html_e( 'SKU', 'oli-pdf-invoices-packing-slips' ); ?></th>
@@ -137,6 +146,16 @@ $show_images    = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
 			<?php foreach ( $order->get_items() as $item ) : ?>
 				<?php $product = $item->get_product(); ?>
 				<tr>
+					<?php if ( $show_images ) : ?>
+						<td>
+							<?php
+							$image_src = \Oli_PDF\Generator::get_product_image_src( $product );
+							if ( $image_src ) :
+								?>
+								<img src="<?php echo esc_attr( $image_src ); ?>" class="product-image" alt="">
+							<?php endif; ?>
+						</td>
+					<?php endif; ?>
 					<td><?php echo esc_html( $item->get_name() ); ?></td>
 					<?php if ( $show_sku ) : ?>
 						<td><?php echo $product ? esc_html( $product->get_sku() ) : ''; ?></td>

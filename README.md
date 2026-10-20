@@ -6,7 +6,8 @@ A comprehensive WooCommerce plugin for generating professional PDF invoices, pac
 
 - **Sequential Invoice Numbering** - Customizable prefix, suffix, padding, and start number
 - **Auto Email Attachments** - Attach invoices to WooCommerce customer emails
-- **Multiple Document Types** - Invoices, packing slips, delivery notes, and shipping labels
+- **Multiple Document Types** - Invoices, packing slips, delivery notes, shipping labels, and credit notes
+- **Label presets** - A4, Letter, 4x6, 4x4, custom size, multiple labels per sheet
 - **Bulk Operations** - Download multiple PDFs as ZIP from orders list
 - **Customer Downloads** - Let customers download invoices from My Account
 - **Template Customization** - Logo, company info, VAT/tax numbers, colors, show/hide fields
@@ -26,7 +27,7 @@ A comprehensive WooCommerce plugin for generating professional PDF invoices, pac
 4. Activate through WordPress admin
 5. Configure at WooCommerce > PDF Documents
 
-> **Note**: The plugin will not work without Composer dependencies. Make sure to run `composer install --no-dev` before activating.
+> **Note**: A development checkout needs `composer install --no-dev`. The release zip from `bash bin/build-release.sh` already includes `vendor/` and works without Composer on the server.
 
 ### Requirements
 
@@ -51,7 +52,17 @@ find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
 
 Run PHPCS:
 ```bash
-./vendor/bin/phpcs
+composer phpcs
+```
+
+Run WebToffee format tests:
+```bash
+php tests/run-webtoffee-format-tests.php
+```
+
+Build a release zip (includes vendor/):
+```bash
+bash bin/build-release.sh
 ```
 
 ### Translations

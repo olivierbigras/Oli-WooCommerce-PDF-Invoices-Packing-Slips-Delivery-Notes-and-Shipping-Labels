@@ -1,4 +1,4 @@
-# Testing Guide for Oli PDF Invoices v0.1.0
+# Testing Guide for Oli PDF Invoices v0.1.1
 
 This document provides comprehensive testing instructions for the WooCommerce PDF plugin.
 

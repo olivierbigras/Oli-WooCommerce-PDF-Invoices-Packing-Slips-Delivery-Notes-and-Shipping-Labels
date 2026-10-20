@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Oli PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce
  * Plugin URI: https://olivierbigras.com/
- * Description: Generate and print PDF invoices, packing slips, delivery notes, and shipping labels for WooCommerce orders. Customize templates, auto-attach to emails, and manage sequential invoice numbering.
- * Version: 0.1.0
+ * Description: Generate and print PDF invoices, packing slips, delivery notes, shipping labels, and credit notes for WooCommerce orders. Customize templates, auto-attach to emails, and manage sequential invoice numbering.
+ * Version: 0.1.1
  * Author: Olivier Bigras
  * Author URI: https://olivierbigras.com/
  * License: GPL-2.0-or-later
@@ -22,7 +22,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.0' );
+	define( 'OLI_PDF_VERSION', '0.1.1' );
 }
 
 if ( ! defined( 'OLI_PDF_PLUGIN_FILE' ) ) {
@@ -37,22 +37,25 @@ if ( ! defined( 'OLI_PDF_PLUGIN_URL' ) ) {
 	define( 'OLI_PDF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
-require_once OLI_PDF_PLUGIN_DIR . 'vendor/autoload.php';
+$oli_pdf_autoload = OLI_PDF_PLUGIN_DIR . 'vendor/autoload.php';
+if ( file_exists( $oli_pdf_autoload ) ) {
+	require_once $oli_pdf_autoload;
+}
 
 /**
- * Main plugin class
+ * Main plugin class.
  */
 final class Oli_PDF_Invoices {
 
 	/**
-	 * Single instance
+	 * Single instance.
 	 *
-	 * @var Oli_PDF_Invoices
+	 * @var Oli_PDF_Invoices|null
 	 */
 	private static $instance = null;
 
 	/**
-	 * Get instance
+	 * Get instance.
 	 *
 	 * @return Oli_PDF_Invoices
 	 */
@@ -64,16 +67,26 @@ final class Oli_PDF_Invoices {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	private function __construct() {
+		add_action( 'before_woocommerce_init', array( $this, 'declare_hpos_compatibility' ) );
 		add_action( 'plugins_loaded', array( $this, 'init' ) );
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 	}
 
 	/**
-	 * Initialize plugin
+	 * Declare HPOS compatibility.
+	 */
+	public function declare_hpos_compatibility() {
+		if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', OLI_PDF_PLUGIN_FILE, true );
+		}
+	}
+
+	/**
+	 * Initialize plugin.
 	 */
 	public function init() {
 		if ( ! $this->check_dependencies() ) {
@@ -87,7 +100,7 @@ final class Oli_PDF_Invoices {
 	}
 
 	/**
-	 * Check dependencies
+	 * Check dependencies.
 	 *
 	 * @return bool
 	 */
@@ -97,8 +110,13 @@ final class Oli_PDF_Invoices {
 			return false;
 		}
 
-		if ( version_compare( WC_VERSION, '9.0', '<' ) ) {
+		if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '9.0', '<' ) ) {
 			add_action( 'admin_notices', array( $this, 'woocommerce_version_notice' ) );
+			return false;
+		}
+
+		if ( ! file_exists( OLI_PDF_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+			add_action( 'admin_notices', array( $this, 'vendor_missing_notice' ) );
 			return false;
 		}
 
@@ -106,7 +124,7 @@ final class Oli_PDF_Invoices {
 	}
 
 	/**
-	 * Include required files
+	 * Include required files.
 	 */
 	private function includes() {
 		require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-settings.php';
@@ -120,7 +138,7 @@ final class Oli_PDF_Invoices {
 	}
 
 	/**
-	 * Initialize hooks
+	 * Initialize hooks.
 	 */
 	private function init_hooks() {
 		new Oli_PDF\Settings();
@@ -131,7 +149,7 @@ final class Oli_PDF_Invoices {
 	}
 
 	/**
-	 * Activation hook
+	 * Activation hook.
 	 */
 	public function activate() {
 		if ( ! class_exists( 'WooCommerce' ) ) {
@@ -139,51 +157,56 @@ final class Oli_PDF_Invoices {
 			wp_die( esc_html__( 'This plugin requires WooCommerce to be installed and active.', 'oli-pdf-invoices-packing-slips' ) );
 		}
 
-		$this->create_tables();
 		$this->set_default_options();
-
 		flush_rewrite_rules();
 	}
 
 	/**
-	 * Deactivation hook
+	 * Deactivation hook.
 	 */
 	public function deactivate() {
 		flush_rewrite_rules();
 	}
 
 	/**
-	 * Create database tables
-	 */
-	private function create_tables() {
-		// Future: store invoice numbers in custom table for better performance
-	}
-
-	/**
-	 * Set default options
+	 * Set default options.
 	 */
 	private function set_default_options() {
 		$defaults = array(
-			'invoice_number_prefix'      => '',
-			'invoice_number_suffix'      => '',
-			'invoice_number_padding'     => 4,
-			'invoice_number_start'       => 1,
+			'invoice_number_prefix'       => '',
+			'invoice_number_suffix'       => '',
+			'invoice_number_padding'      => 4,
+			'invoice_number_start'        => 1,
 			'invoice_generation_statuses' => array( 'processing', 'completed' ),
-			'invoice_email_attach'       => array( 'customer_invoice', 'customer_completed_order' ),
-			'show_sku'                   => 'yes',
-			'show_weight'                => 'yes',
-			'show_tax_breakdown'         => 'yes',
-			'show_shipping'              => 'yes',
-			'show_payment_method'        => 'yes',
-			'show_customer_note'         => 'yes',
-			'show_product_images'        => 'no',
-			'show_product_meta'          => 'yes',
-			'company_name'               => '',
-			'company_address'            => '',
-			'vat_number'                 => '',
-			'tax_number'                 => '',
-			'footer_text'                => '',
-			'logo_url'                   => '',
+			'invoice_email_attach'        => array( 'customer_invoice', 'customer_completed_order' ),
+			'enable_credit_notes'         => 'yes',
+			'credit_note_number_prefix'   => 'CN-',
+			'credit_note_number_suffix'   => '',
+			'credit_note_number_padding'  => 4,
+			'credit_note_number_start'    => 1,
+			'label_size'                  => 'a4',
+			'label_custom_width'          => 100,
+			'label_custom_height'         => 150,
+			'labels_per_sheet'            => 1,
+			'label_columns'               => 1,
+			'label_rows'                  => 1,
+			'show_sku'                    => 'yes',
+			'show_weight'                 => 'yes',
+			'show_tax_breakdown'          => 'yes',
+			'show_shipping'               => 'yes',
+			'show_payment_method'         => 'yes',
+			'show_customer_note'          => 'yes',
+			'show_product_images'         => 'no',
+			'product_image_size'          => 50,
+			'show_product_meta'           => 'yes',
+			'template_primary_color'      => '#000000',
+			'template_secondary_color'    => '#f5f5f5',
+			'company_name'                => '',
+			'company_address'             => '',
+			'vat_number'                  => '',
+			'tax_number'                  => '',
+			'footer_text'                 => '',
+			'logo_url'                    => '',
 		);
 
 		foreach ( $defaults as $key => $value ) {
@@ -194,30 +217,37 @@ final class Oli_PDF_Invoices {
 	}
 
 	/**
-	 * WooCommerce missing notice
+	 * WooCommerce missing notice.
 	 */
 	public function woocommerce_missing_notice() {
-		?>
-		<div class="notice notice-error">
-			<p><?php esc_html_e( 'Oli PDF Invoices requires WooCommerce to be installed and active.', 'oli-pdf-invoices-packing-slips' ); ?></p>
-		</div>
-		<?php
+		echo '<div class="notice notice-error"><p>';
+		esc_html_e( 'Oli PDF Invoices requires WooCommerce to be installed and active.', 'oli-pdf-invoices-packing-slips' );
+		echo '</p></div>';
 	}
 
 	/**
-	 * WooCommerce version notice
+	 * WooCommerce version notice.
 	 */
 	public function woocommerce_version_notice() {
-		?>
-		<div class="notice notice-error">
-			<p><?php esc_html_e( 'Oli PDF Invoices requires WooCommerce 9.0 or higher.', 'oli-pdf-invoices-packing-slips' ); ?></p>
-		</div>
-		<?php
+		echo '<div class="notice notice-error"><p>';
+		esc_html_e( 'Oli PDF Invoices requires WooCommerce 9.0 or higher.', 'oli-pdf-invoices-packing-slips' );
+		echo '</p></div>';
+	}
+
+	/**
+	 * Vendor missing notice.
+	 */
+	public function vendor_missing_notice() {
+		echo '<div class="notice notice-error"><p>';
+		esc_html_e( 'Oli PDF Invoices is missing Composer dependencies. Run composer install --no-dev or install the release zip that includes vendor/.', 'oli-pdf-invoices-packing-slips' );
+		echo '</p></div>';
 	}
 }
 
 /**
- * Initialize plugin
+ * Initialize plugin.
+ *
+ * @return Oli_PDF_Invoices
  */
 function oli_pdf_invoices() {
 	return Oli_PDF_Invoices::instance();
