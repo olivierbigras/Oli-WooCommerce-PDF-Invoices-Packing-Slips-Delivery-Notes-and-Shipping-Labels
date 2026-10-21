@@ -10,11 +10,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$company_name = get_option( 'oli_pdf_company_name', '' );
-$show_sku     = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
-$logo_src     = \Oli_PDF\Generator::get_logo_src();
+( static function ( $order ) {
+	$company_name = get_option( 'oli_pdf_company_name', '' );
+	$show_sku     = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+	$logo_src     = \Oli_PDF\Generator::get_logo_src();
 
-?>
+	?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -71,3 +72,5 @@ $logo_src     = \Oli_PDF\Generator::get_logo_src();
 	</div>
 </body>
 </html>
+	<?php
+} )( $order );

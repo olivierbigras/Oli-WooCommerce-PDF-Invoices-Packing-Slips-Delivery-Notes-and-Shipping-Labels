@@ -33,7 +33,6 @@
 				<element value="Oli_PDF"/>
 			</property>
 		</properties>
-		<exclude-pattern>*/templates/*</exclude-pattern>
 	</rule>
 
 	<config name="testVersion" value="7.4-"/>

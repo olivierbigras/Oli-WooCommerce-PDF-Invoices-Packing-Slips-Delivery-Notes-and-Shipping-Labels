@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-10-21
+
+### Fixed
+- Plugin header `Tested up to` now matches `readme.txt` (`7.1`) so Plugin Check no longer reports `mismatched_tested_up_to_header`.
+- PDF templates assign their locals inside a prefixed closure, so unprefixed `$company_name` / `$item` variables are no longer global.
+
+### Added
+- `.distignore` and `.gitattributes` `export-ignore` so the release zip omits development paths (`tests/`, `bin/`, `.github/`, PHPCS/PHPUnit/Composer/npm metadata, `.gitignore`, internal Markdown). `readme.txt` stays in the zip.
+
 ## [0.1.2] - 2026-10-21
 
 ### Changed

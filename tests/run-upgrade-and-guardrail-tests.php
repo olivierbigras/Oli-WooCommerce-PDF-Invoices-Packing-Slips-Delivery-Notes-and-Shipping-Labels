@@ -14,7 +14,7 @@ if ( ! defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
 }
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.2' );
+	define( 'OLI_PDF_VERSION', '0.1.3' );
 }
 
 $oli_pdf_options = array();
@@ -156,6 +156,25 @@ oli_pdf_guard_assert( array() === $blocked, 'No literal script/style tags in plu
 $style = Generator::style_element( 'body{color:red;}' );
 oli_pdf_guard_assert( false !== strpos( $style, 'body{color:red;}' ), 'style_element wraps CSS' );
 oli_pdf_guard_assert( 0 === strpos( $style, '<style' ), 'style_element emits a style element at runtime' );
+
+$oli_pdf_main   = file_get_contents( dirname( __DIR__ ) . '/oli-pdf-invoices-packing-slips.php' );
+$oli_pdf_readme = file_get_contents( dirname( __DIR__ ) . '/readme.txt' );
+preg_match( '/^\s*\*\s*Tested up to:\s*(\S+)/m', $oli_pdf_main, $oli_pdf_header_tested );
+preg_match( '/^Tested up to:\s*(\S+)/m', $oli_pdf_readme, $oli_pdf_readme_tested );
+oli_pdf_guard_assert(
+	isset( $oli_pdf_header_tested[1], $oli_pdf_readme_tested[1] ) && $oli_pdf_header_tested[1] === $oli_pdf_readme_tested[1],
+	'Tested up to matches in the plugin header and readme.txt'
+);
+preg_match( '/^\s*\*\s*Version:\s*(\S+)/m', $oli_pdf_main, $oli_pdf_header_version );
+preg_match( '/^Stable tag:\s*(\S+)/m', $oli_pdf_readme, $oli_pdf_stable );
+oli_pdf_guard_assert(
+	isset( $oli_pdf_header_version[1], $oli_pdf_stable[1] ) && $oli_pdf_header_version[1] === $oli_pdf_stable[1],
+	'Plugin header Version matches readme.txt Stable tag'
+);
+oli_pdf_guard_assert( is_readable( dirname( __DIR__ ) . '/.distignore' ), '.distignore exists' );
+oli_pdf_guard_assert( is_readable( dirname( __DIR__ ) . '/.gitattributes' ), '.gitattributes exists' );
+$oli_pdf_gitattributes = file_get_contents( dirname( __DIR__ ) . '/.gitattributes' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_gitattributes, 'export-ignore' ), '.gitattributes uses export-ignore' );
 
 if ( $failures > 0 ) {
 	echo "\n$failures test(s) failed.\n";

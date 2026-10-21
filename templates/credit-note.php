@@ -10,19 +10,20 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$credit_number   = $order->get_meta( '_oli_pdf_credit_note_number' );
-$credit_date     = $order->get_meta( '_oli_pdf_credit_note_date' );
-$invoice_number  = $order->get_meta( '_oli_pdf_invoice_number' );
-$company_name    = get_option( 'oli_pdf_company_name', '' );
-$company_address = get_option( 'oli_pdf_company_address', '' );
-$vat_number      = get_option( 'oli_pdf_vat_number', '' );
-$footer_text     = get_option( 'oli_pdf_footer_text', '' );
-$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
-$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
-$logo_src        = \Oli_PDF\Generator::get_logo_src();
-$refunds         = $order->get_refunds();
-$refund_total    = $order->get_total_refunded();
-?>
+( static function ( $order ) {
+	$credit_number   = $order->get_meta( '_oli_pdf_credit_note_number' );
+	$credit_date     = $order->get_meta( '_oli_pdf_credit_note_date' );
+	$invoice_number  = $order->get_meta( '_oli_pdf_invoice_number' );
+	$company_name    = get_option( 'oli_pdf_company_name', '' );
+	$company_address = get_option( 'oli_pdf_company_address', '' );
+	$vat_number      = get_option( 'oli_pdf_vat_number', '' );
+	$footer_text     = get_option( 'oli_pdf_footer_text', '' );
+	$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+	$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
+	$logo_src        = \Oli_PDF\Generator::get_logo_src();
+	$refunds         = $order->get_refunds();
+	$refund_total    = $order->get_total_refunded();
+	?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -132,3 +133,5 @@ $refund_total    = $order->get_total_refunded();
 	<?php endif; ?>
 </body>
 </html>
+	<?php
+} )( $order );

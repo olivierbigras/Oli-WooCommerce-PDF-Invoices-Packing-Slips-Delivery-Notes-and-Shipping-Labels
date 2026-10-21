@@ -10,22 +10,23 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$invoice_number  = $order->get_meta( '_oli_pdf_invoice_number' );
-$invoice_date    = $order->get_meta( '_oli_pdf_invoice_date' );
-$company_name    = get_option( 'oli_pdf_company_name', '' );
-$company_address = get_option( 'oli_pdf_company_address', '' );
-$vat_number      = get_option( 'oli_pdf_vat_number', '' );
-$tax_number      = get_option( 'oli_pdf_tax_number', '' );
-$footer_text     = get_option( 'oli_pdf_footer_text', '' );
-$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
-$show_tax        = 'yes' === get_option( 'oli_pdf_show_tax_breakdown', 'yes' );
-$show_shipping   = 'yes' === get_option( 'oli_pdf_show_shipping', 'yes' );
-$show_payment    = 'yes' === get_option( 'oli_pdf_show_payment_method', 'yes' );
-$show_note       = 'yes' === get_option( 'oli_pdf_show_customer_note', 'yes' );
-$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
-$show_meta       = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
-$logo_src        = \Oli_PDF\Generator::get_logo_src();
-?>
+( static function ( $order ) {
+	$invoice_number  = $order->get_meta( '_oli_pdf_invoice_number' );
+	$invoice_date    = $order->get_meta( '_oli_pdf_invoice_date' );
+	$company_name    = get_option( 'oli_pdf_company_name', '' );
+	$company_address = get_option( 'oli_pdf_company_address', '' );
+	$vat_number      = get_option( 'oli_pdf_vat_number', '' );
+	$tax_number      = get_option( 'oli_pdf_tax_number', '' );
+	$footer_text     = get_option( 'oli_pdf_footer_text', '' );
+	$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
+	$show_tax        = 'yes' === get_option( 'oli_pdf_show_tax_breakdown', 'yes' );
+	$show_shipping   = 'yes' === get_option( 'oli_pdf_show_shipping', 'yes' );
+	$show_payment    = 'yes' === get_option( 'oli_pdf_show_payment_method', 'yes' );
+	$show_note       = 'yes' === get_option( 'oli_pdf_show_customer_note', 'yes' );
+	$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
+	$show_meta       = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
+	$logo_src        = \Oli_PDF\Generator::get_logo_src();
+	?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -177,3 +178,5 @@ $logo_src        = \Oli_PDF\Generator::get_logo_src();
 	<?php endif; ?>
 </body>
 </html>
+	<?php
+} )( $order );

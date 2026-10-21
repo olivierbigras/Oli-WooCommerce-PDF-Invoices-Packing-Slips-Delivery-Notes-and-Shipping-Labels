@@ -2,6 +2,8 @@
 
 A comprehensive WooCommerce plugin for generating professional PDF invoices, packing slips, delivery notes, and shipping labels.
 
+**Repository:** https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels
+
 ## Features
 
 - **Sequential Invoice Numbering** - Customizable prefix, suffix, padding, and start number
@@ -108,7 +110,9 @@ All standard WordPress filters apply to content.
 
 ## Support
 
-For issues and feature requests, please use the GitHub issue tracker.
+For issues and feature requests, use the GitHub issue tracker:
+
+https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/issues
 
 ## Changelog
 

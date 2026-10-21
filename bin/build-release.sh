@@ -34,20 +34,15 @@ fi
 rm -rf "$DIST_DIR"
 mkdir -p "$STAGE"
 
-# Copy plugin files, excluding development-only paths.
+# Copy plugin files using .distignore (same exclusions as wordpress.org / git archive).
+EXCLUDE_FILE="$(mktemp)"
+grep -vE '^\s*(#|$)' "$ROOT/.distignore" > "$EXCLUDE_FILE"
 tar \
+	--exclude-from="$EXCLUDE_FILE" \
 	--exclude='.git' \
-	--exclude='.github' \
 	--exclude='dist' \
-	--exclude='tests' \
-	--exclude='bin' \
-	--exclude='node_modules' \
-	--exclude='IMPLEMENTATION_SUMMARY.md' \
-	--exclude='.gitignore' \
-	--exclude='phpcs.xml' \
-	--exclude='composer' \
-	--exclude='composer.phar' \
 	-cf - . | tar -xf - -C "$STAGE"
+rm -f "$EXCLUDE_FILE"
 
 if [ ! -f "$STAGE/vendor/autoload.php" ]; then
 	echo "Staged zip is missing vendor/autoload.php." >&2

@@ -4,7 +4,7 @@ Tags: woocommerce, pdf, invoice, packing slip, shipping label
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 9.0
@@ -110,6 +110,11 @@ No requests are made to PayPal, Google, Cloudflare Turnstile, Carto, Leaflet, Go
 
 == Changelog ==
 
+= 0.1.3 - 2026-10-21 =
+* Align Tested up to 7.1 in the plugin header and readme.txt
+* Scope PDF template variables so they are not unprefixed globals
+* Exclude development files from the release zip via .distignore and .gitattributes
+
 = 0.1.2 - 2026-10-21 =
 * Display name: Oli PDF Invoices & Packing Slips for WooCommerce (slug and text domain remain oli-pdf-invoices-packing-slips)
 * Extracted PDF and admin CSS/JS to enqueued files; no inline script/style tags
@@ -138,6 +143,9 @@ No requests are made to PayPal, Google, Cloudflare Turnstile, Carto, Leaflet, Go
 * RTL and multilingual support
 
 == Upgrade Notice ==
+
+= 0.1.3 =
+Plugin Check header alignment (Tested up to 7.1), prefixed template scope, and a cleaner release zip.
 
 = 0.1.2 =
 WordPress.org readiness: renamed display name, extracted CSS/JS, output escaping, and a lossless option-key migration.
@@ -173,3 +181,5 @@ Available templates:
 == Credits ==
 
 Developed by Olivier Bigras
+
+Source: https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels

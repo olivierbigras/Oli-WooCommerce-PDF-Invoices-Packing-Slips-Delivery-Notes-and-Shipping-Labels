@@ -3,7 +3,7 @@
  * Plugin Name: Oli PDF Invoices & Packing Slips for WooCommerce
  * Plugin URI: https://olivierbigras.com/
  * Description: Generate and print PDF invoices, packing slips, delivery notes, shipping labels, and credit notes for WooCommerce orders. Customize templates, auto-attach to emails, and manage sequential invoice numbering.
- * Version: 0.1.2
+ * Version: 0.1.3
  * Author: Olivier Bigras
  * Author URI: https://olivierbigras.com/
  * License: GPL-2.0-or-later
@@ -11,7 +11,7 @@
  * Text Domain: oli-pdf-invoices-packing-slips
  * Domain Path: /languages
  * Requires at least: 6.5
- * Tested up to: 7.1.3
+ * Tested up to: 7.1
  * Requires PHP: 7.4
  * WC requires at least: 9.0
  * WC tested up to: 11.0
@@ -22,7 +22,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.2' );
+	define( 'OLI_PDF_VERSION', '0.1.3' );
 }
 
 if ( ! defined( 'OLI_PDF_PLUGIN_FILE' ) ) {

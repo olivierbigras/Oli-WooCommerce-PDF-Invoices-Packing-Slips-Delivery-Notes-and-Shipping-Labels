@@ -10,9 +10,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$company_name    = get_option( 'oli_pdf_company_name', '' );
-$company_address = get_option( 'oli_pdf_company_address', '' );
-?>
+( static function ( $order ) {
+	$company_name    = get_option( 'oli_pdf_company_name', '' );
+	$company_address = get_option( 'oli_pdf_company_address', '' );
+	?>
 <div class="oli-pdf-label">
 	<div class="oli-pdf-label-block">
 		<div class="oli-pdf-label-heading"><?php esc_html_e( 'From:', 'oli-pdf-invoices-packing-slips' ); ?></div>
@@ -34,3 +35,5 @@ $company_address = get_option( 'oli_pdf_company_address', '' );
 		<strong><?php esc_html_e( 'Date:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $order->get_date_created() ? $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) : '' ); ?>
 	</div>
 </div>
+	<?php
+} )( $order );

@@ -1,0 +1,18 @@
+# Exclude development files from git archive / wordpress.org export.
+# Keep readme.txt in the packaged plugin.
+
+/.github export-ignore
+/bin export-ignore
+/tests export-ignore
+/node_modules export-ignore
+
+/.distignore export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+
+phpcs.xml* export-ignore
+phpunit.xml* export-ignore
+composer.* export-ignore
+package*.json export-ignore
+
+*.md export-ignore

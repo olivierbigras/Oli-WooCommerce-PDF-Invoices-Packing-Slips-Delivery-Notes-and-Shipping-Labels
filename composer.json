@@ -3,12 +3,17 @@
     "description": "Oli PDF Invoices & Packing Slips for WooCommerce",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels",
     "authors": [
         {
             "name": "Olivier Bigras",
             "homepage": "https://olivierbigras.com/"
         }
     ],
+    "support": {
+        "issues": "https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/issues",
+        "source": "https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels"
+    },
     "require": {
         "php": ">=7.4",
         "dompdf/dompdf": "^2.0"
