@@ -1,4 +1,4 @@
-# Oli PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce
+# Oli PDF Invoices & Packing Slips for WooCommerce
 
 A comprehensive WooCommerce plugin for generating professional PDF invoices, packing slips, delivery notes, and shipping labels.
 
@@ -55,9 +55,10 @@ Run PHPCS:
 composer phpcs
 ```
 
-Run WebToffee format tests:
+Run standalone tests:
 ```bash
 php tests/run-webtoffee-format-tests.php
+php tests/run-upgrade-and-guardrail-tests.php
 ```
 
 Build a release zip (includes vendor/):
@@ -80,6 +81,7 @@ Copy templates from `templates/` to `yourtheme/oli-pdf-templates/`:
 - `packing-slip.php`
 - `delivery-note.php`
 - `shipping-label.php`
+- `credit-note.php`
 
 ## Migration from WebToffee
 

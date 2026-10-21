@@ -13,7 +13,7 @@ Complete WooCommerce PDF plugin built from scratch with feature parity to WebTof
 
 ## Plugin Identity
 
-- **Display Name**: Oli PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce
+- **Display Name**: Oli PDF Invoices & Packing Slips for WooCommerce
 - **Slug**: `oli-pdf-invoices-packing-slips`
 - **Text Domain**: `oli-pdf-invoices-packing-slips`
 - **Author**: Olivier Bigras

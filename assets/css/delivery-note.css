@@ -1,0 +1,16 @@
+.oli-pdf-logo {
+	float: none;
+	max-width: 150px;
+	max-height: 80px;
+}
+
+.oli-pdf-title {
+	font-size: 20px;
+}
+
+.oli-pdf-signature {
+	margin-top: 50px;
+	border-top: 1px solid #333;
+	width: 200px;
+	padding-top: 10px;
+}

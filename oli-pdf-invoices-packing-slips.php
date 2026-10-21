@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Oli PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce
+ * Plugin Name: Oli PDF Invoices & Packing Slips for WooCommerce
  * Plugin URI: https://olivierbigras.com/
  * Description: Generate and print PDF invoices, packing slips, delivery notes, shipping labels, and credit notes for WooCommerce orders. Customize templates, auto-attach to emails, and manage sequential invoice numbering.
- * Version: 0.1.1
+ * Version: 0.1.2
  * Author: Olivier Bigras
  * Author URI: https://olivierbigras.com/
  * License: GPL-2.0-or-later
@@ -11,7 +11,7 @@
  * Text Domain: oli-pdf-invoices-packing-slips
  * Domain Path: /languages
  * Requires at least: 6.5
- * Tested up to: 7.1
+ * Tested up to: 7.1.3
  * Requires PHP: 7.4
  * WC requires at least: 9.0
  * WC tested up to: 11.0
@@ -22,7 +22,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.1' );
+	define( 'OLI_PDF_VERSION', '0.1.2' );
 }
 
 if ( ! defined( 'OLI_PDF_PLUGIN_FILE' ) ) {
@@ -96,6 +96,7 @@ final class Oli_PDF_Invoices {
 		load_plugin_textdomain( 'oli-pdf-invoices-packing-slips', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 		$this->includes();
+		Oli_PDF\Upgrade::maybe_upgrade();
 		$this->init_hooks();
 	}
 
@@ -134,6 +135,7 @@ final class Oli_PDF_Invoices {
 		require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-emails.php';
 		require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-my-account.php';
 		require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-migration.php';
+		require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-upgrade.php';
 		require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-bulk-actions.php';
 	}
 
@@ -158,6 +160,10 @@ final class Oli_PDF_Invoices {
 		}
 
 		$this->set_default_options();
+		if ( ! class_exists( '\Oli_PDF\Upgrade' ) ) {
+			require_once OLI_PDF_PLUGIN_DIR . 'includes/class-oli-pdf-upgrade.php';
+		}
+		Oli_PDF\Upgrade::maybe_upgrade();
 		flush_rewrite_rules();
 	}
 
@@ -220,27 +226,30 @@ final class Oli_PDF_Invoices {
 	 * WooCommerce missing notice.
 	 */
 	public function woocommerce_missing_notice() {
-		echo '<div class="notice notice-error"><p>';
-		esc_html_e( 'Oli PDF Invoices requires WooCommerce to be installed and active.', 'oli-pdf-invoices-packing-slips' );
-		echo '</p></div>';
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			esc_html__( 'Oli PDF Invoices requires WooCommerce to be installed and active.', 'oli-pdf-invoices-packing-slips' )
+		);
 	}
 
 	/**
 	 * WooCommerce version notice.
 	 */
 	public function woocommerce_version_notice() {
-		echo '<div class="notice notice-error"><p>';
-		esc_html_e( 'Oli PDF Invoices requires WooCommerce 9.0 or higher.', 'oli-pdf-invoices-packing-slips' );
-		echo '</p></div>';
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			esc_html__( 'Oli PDF Invoices requires WooCommerce 9.0 or higher.', 'oli-pdf-invoices-packing-slips' )
+		);
 	}
 
 	/**
 	 * Vendor missing notice.
 	 */
 	public function vendor_missing_notice() {
-		echo '<div class="notice notice-error"><p>';
-		esc_html_e( 'Oli PDF Invoices is missing Composer dependencies. Run composer install --no-dev or install the release zip that includes vendor/.', 'oli-pdf-invoices-packing-slips' );
-		echo '</p></div>';
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			esc_html__( 'Oli PDF Invoices is missing Composer dependencies. Run composer install --no-dev or install the release zip that includes vendor/.', 'oli-pdf-invoices-packing-slips' )
+		);
 	}
 }
 

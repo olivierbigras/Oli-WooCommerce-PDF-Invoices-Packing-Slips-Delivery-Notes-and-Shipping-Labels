@@ -1,0 +1,22 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.oli-pdf-sheet {
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+}
+
+.oli-pdf-sheet td {
+	width: {{oli_pdf_cell_width}}%;
+	height: {{oli_pdf_cell_height}}%;
+	vertical-align: top;
+	overflow: hidden;
+	border: 1px dashed #ccc;
+	padding: 4px;
+}

@@ -47,6 +47,8 @@ jobs:
           coverage: none
       - name: Run standalone migration format tests
         run: php tests/run-webtoffee-format-tests.php
+      - name: Run upgrade and guardrail tests
+        run: php tests/run-upgrade-and-guardrail-tests.php
 
   release-zip:
     name: Release zip

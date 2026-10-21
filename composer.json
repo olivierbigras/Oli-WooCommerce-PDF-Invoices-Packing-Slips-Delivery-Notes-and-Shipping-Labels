@@ -1,6 +1,6 @@
 {
     "name": "olivierbigras/oli-pdf-invoices-packing-slips",
-    "description": "PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce",
+    "description": "Oli PDF Invoices & Packing Slips for WooCommerce",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -23,7 +23,7 @@
         "phpcs": "phpcs --standard=phpcs.xml",
         "phpcbf": "phpcbf --standard=phpcs.xml",
         "lint": "find . -name '*.php' ! -path './vendor/*' -print0 | xargs -0 -n1 php -l",
-        "test": "php tests/run-webtoffee-format-tests.php",
+        "test": "php tests/run-webtoffee-format-tests.php && php tests/run-upgrade-and-guardrail-tests.php",
         "build": "bash bin/build-release.sh"
     },
     "config": {

@@ -1,10 +1,10 @@
-=== Oli PDF Invoices, Packing Slips, Delivery Notes and Shipping Labels for WooCommerce ===
+=== Oli PDF Invoices & Packing Slips for WooCommerce ===
 Contributors: bigrat95
 Tags: woocommerce, pdf, invoice, packing slip, shipping label
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 9.0
@@ -14,7 +14,7 @@ Generate professional PDF invoices, packing slips, delivery notes, and shipping 
 
 == Description ==
 
-**Oli PDF Invoices** is a complete PDF document solution for WooCommerce that helps you create professional invoices, packing slips, delivery notes, and shipping labels.
+**Oli PDF Invoices & Packing Slips for WooCommerce** is a complete PDF document solution that helps you create professional invoices, packing slips, delivery notes, and shipping labels.
 
 = Key Features =
 
@@ -85,6 +85,20 @@ Yes, the plugin does not collect or transmit any data. All PDFs are generated on
 
 Yes, the plugin is fully compatible with WooCommerce HPOS.
 
+== External services ==
+
+This plugin does not call remote APIs during normal use.
+
+= Local PDF generation =
+
+Invoices, packing slips, delivery notes, shipping labels, and credit notes are generated on your WordPress server with the bundled Dompdf library. Remote HTTP fetching is disabled. Company logos and product images are embedded from local Media Library files as data URIs. A logo URL that is not a local file is omitted instead of being fetched from a third-party host.
+
+= Author website =
+
+The plugin header Plugin URI and Author URI point to https://olivierbigras.com/. The plugin does not contact that site at runtime.
+
+No requests are made to PayPal, Google, Cloudflare Turnstile, Carto, Leaflet, Google Sheets, Google Fonts, or Adobe Typekit.
+
 == Screenshots ==
 
 1. Settings page - Invoice configuration
@@ -95,6 +109,13 @@ Yes, the plugin is fully compatible with WooCommerce HPOS.
 6. Bulk actions in orders list
 
 == Changelog ==
+
+= 0.1.2 - 2026-10-21 =
+* Display name: Oli PDF Invoices & Packing Slips for WooCommerce (slug and text domain remain oli-pdf-invoices-packing-slips)
+* Extracted PDF and admin CSS/JS to enqueued files; no inline script/style tags
+* Escaped remaining admin and template output
+* Upgrade copies leftover olipdf_* options to oli_pdf_* then deletes the old keys
+* Documented that the plugin does not use external services
 
 = 0.1.1 - 2026-10-20 =
 * Shipping label size presets (A4, Letter, 4x6, 4x4, custom) and multiple labels per sheet
@@ -117,6 +138,9 @@ Yes, the plugin is fully compatible with WooCommerce HPOS.
 * RTL and multilingual support
 
 == Upgrade Notice ==
+
+= 0.1.2 =
+WordPress.org readiness: renamed display name, extracted CSS/JS, output escaping, and a lossless option-key migration.
 
 = 0.1.1 =
 Adds credit notes, label presets, colors, and a corrected WebToffee migration.
@@ -144,6 +168,7 @@ Available templates:
 * `packing-slip.php`
 * `delivery-note.php`
 * `shipping-label.php`
+* `credit-note.php`
 
 == Credits ==
 

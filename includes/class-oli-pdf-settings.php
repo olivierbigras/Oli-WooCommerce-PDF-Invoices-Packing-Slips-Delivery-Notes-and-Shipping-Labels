@@ -346,7 +346,7 @@ class Settings {
 			<?php settings_errors(); ?>
 			<nav class="nav-tab-wrapper">
 				<?php foreach ( $tabs as $tab_id => $tab_label ) : ?>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=oli-pdf-settings&tab=' . $tab_id ) ); ?>" class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?>">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=oli-pdf-settings&tab=' . $tab_id ) ); ?>" class="nav-tab <?php echo esc_attr( $current_tab === $tab_id ? 'nav-tab-active' : '' ); ?>">
 						<?php echo esc_html( $tab_label ); ?>
 					</a>
 				<?php endforeach; ?>
@@ -451,7 +451,7 @@ class Settings {
 					$value = array();
 				}
 				printf(
-					'<select name="oli_pdf_%1$s[]" id="oli_pdf_%1$s" multiple class="regular-text" style="height:150px;">',
+					'<select name="oli_pdf_%1$s[]" id="oli_pdf_%1$s" multiple class="regular-text oli-pdf-multiselect">',
 					esc_attr( $id )
 				);
 				foreach ( $args['options'] as $key => $label ) {
@@ -512,6 +512,12 @@ class Settings {
 		}
 
 		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_style(
+			'oli-pdf-admin',
+			OLI_PDF_PLUGIN_URL . 'assets/css/admin.css',
+			array( 'wp-color-picker' ),
+			OLI_PDF_VERSION
+		);
 		wp_enqueue_script(
 			'oli-pdf-admin',
 			OLI_PDF_PLUGIN_URL . 'assets/js/admin.js',

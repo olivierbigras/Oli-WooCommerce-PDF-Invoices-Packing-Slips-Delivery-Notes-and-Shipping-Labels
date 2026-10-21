@@ -15,10 +15,7 @@ $company_address = get_option( 'oli_pdf_company_address', '' );
 $show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
 $show_weight     = 'yes' === get_option( 'oli_pdf_show_weight', 'yes' );
 $show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
-$primary         = \Oli_PDF\Generator::get_primary_color();
-$secondary       = \Oli_PDF\Generator::get_secondary_color();
 $logo_src        = \Oli_PDF\Generator::get_logo_src();
-$image_size      = \Oli_PDF\Generator::get_product_image_size();
 
 ?>
 <!DOCTYPE html>
@@ -26,73 +23,14 @@ $image_size      = \Oli_PDF\Generator::get_product_image_size();
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<title><?php esc_html_e( 'Packing Slip', 'oli-pdf-invoices-packing-slips' ); ?></title>
-	<style>
-		body {
-			font-family: 'DejaVu Sans', sans-serif;
-			font-size: 12px;
-			line-height: 1.5;
-			color: #333;
-		}
-		.header {
-			margin-bottom: 20px;
-			overflow: hidden;
-		}
-		.logo {
-			float: left;
-			max-width: 150px;
-			max-height: 80px;
-		}
-		.company-info {
-			float: right;
-			text-align: right;
-		}
-		.title {
-			font-size: 20px;
-			font-weight: bold;
-			margin: 20px 0;
-			clear: both;
-			color: <?php echo esc_attr( $primary ); ?>;
-		}
-		.addresses {
-			margin: 20px 0;
-		}
-		.addresses table {
-			width: 100%;
-		}
-		.addresses td {
-			width: 50%;
-			padding: 10px;
-			vertical-align: top;
-		}
-		.products-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin: 20px 0;
-		}
-		.products-table th {
-			background: <?php echo esc_attr( $secondary ); ?>;
-			color: <?php echo esc_attr( $primary ); ?>;
-			padding: 10px;
-			text-align: left;
-			border-bottom: 2px solid <?php echo esc_attr( $primary ); ?>;
-		}
-		.product-image { width: <?php echo (int) $image_size; ?>px; height: <?php echo (int) $image_size; ?>px; }
-		.products-table td {
-			padding: 10px;
-			border-bottom: 1px solid #eee;
-		}
-		.text-right {
-			text-align: right;
-		}
-	</style>
 </head>
-<body>
-	<div class="header">
+<body class="oli-pdf-document">
+	<div class="oli-pdf-header">
 		<?php if ( $logo_src ) : ?>
-			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="logo">
+			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo">
 		<?php endif; ?>
-		
-		<div class="company-info">
+
+		<div class="oli-pdf-company-info">
 			<?php if ( $company_name ) : ?>
 				<strong><?php echo esc_html( $company_name ); ?></strong><br>
 			<?php endif; ?>
@@ -102,7 +40,7 @@ $image_size      = \Oli_PDF\Generator::get_product_image_size();
 		</div>
 	</div>
 
-	<div class="title">
+	<div class="oli-pdf-title">
 		<?php esc_html_e( 'PACKING SLIP', 'oli-pdf-invoices-packing-slips' ); ?>
 	</div>
 
@@ -111,7 +49,7 @@ $image_size      = \Oli_PDF\Generator::get_product_image_size();
 		<strong><?php esc_html_e( 'Order Date:', 'oli-pdf-invoices-packing-slips' ); ?></strong> <?php echo esc_html( $order->get_date_created()->date_i18n( get_option( 'date_format' ) ) ); ?>
 	</p>
 
-	<div class="addresses">
+	<div class="oli-pdf-addresses">
 		<table>
 			<tr>
 				<td>
@@ -126,7 +64,7 @@ $image_size      = \Oli_PDF\Generator::get_product_image_size();
 		</table>
 	</div>
 
-	<table class="products-table">
+	<table class="oli-pdf-products">
 		<thead>
 			<tr>
 				<?php if ( $show_images ) : ?>
@@ -152,16 +90,16 @@ $image_size      = \Oli_PDF\Generator::get_product_image_size();
 							$image_src = \Oli_PDF\Generator::get_product_image_src( $product );
 							if ( $image_src ) :
 								?>
-								<img src="<?php echo esc_attr( $image_src ); ?>" class="product-image" alt="">
+								<img src="<?php echo esc_attr( $image_src ); ?>" class="oli-pdf-product-image" alt="">
 							<?php endif; ?>
 						</td>
 					<?php endif; ?>
 					<td><?php echo esc_html( $item->get_name() ); ?></td>
 					<?php if ( $show_sku ) : ?>
-						<td><?php echo $product ? esc_html( $product->get_sku() ) : ''; ?></td>
+						<td><?php echo esc_html( $product ? (string) $product->get_sku() : '' ); ?></td>
 					<?php endif; ?>
 					<?php if ( $show_weight ) : ?>
-						<td><?php echo $product && $product->get_weight() ? esc_html( $product->get_weight() . ' ' . get_option( 'woocommerce_weight_unit' ) ) : ''; ?></td>
+						<td><?php echo esc_html( ( $product && $product->get_weight() ) ? $product->get_weight() . ' ' . get_option( 'woocommerce_weight_unit' ) : '' ); ?></td>
 					<?php endif; ?>
 					<td class="text-right"><?php echo esc_html( $item->get_quantity() ); ?></td>
 				</tr>
