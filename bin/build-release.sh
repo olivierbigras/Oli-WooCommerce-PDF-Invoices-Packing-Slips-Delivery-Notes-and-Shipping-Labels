@@ -24,7 +24,11 @@ else
 fi
 
 echo "Installing production dependencies..."
-$COMPOSER_BIN install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-security-blocking
+COMPOSER_FLAGS=(install --no-dev --optimize-autoloader --prefer-dist --no-interaction)
+if $COMPOSER_BIN install --help 2>/dev/null | grep -q -- '--no-security-blocking'; then
+	COMPOSER_FLAGS+=(--no-security-blocking)
+fi
+$COMPOSER_BIN "${COMPOSER_FLAGS[@]}"
 
 if [ ! -f "$ROOT/vendor/autoload.php" ]; then
 	echo "vendor/autoload.php missing after composer install." >&2

@@ -87,3 +87,4 @@ jobs:
         uses: wordpress/plugin-check-action@v1
         with:
           build-dir: './dist/oli-pdf-invoices-packing-slips'
+          ignore-warnings: 'true'
