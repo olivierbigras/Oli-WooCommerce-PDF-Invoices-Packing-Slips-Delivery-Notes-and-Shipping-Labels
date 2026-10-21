@@ -175,6 +175,8 @@ oli_pdf_guard_assert( is_readable( dirname( __DIR__ ) . '/.distignore' ), '.dist
 oli_pdf_guard_assert( is_readable( dirname( __DIR__ ) . '/.gitattributes' ), '.gitattributes exists' );
 $oli_pdf_gitattributes = file_get_contents( dirname( __DIR__ ) . '/.gitattributes' );
 oli_pdf_guard_assert( false !== strpos( $oli_pdf_gitattributes, 'export-ignore' ), '.gitattributes uses export-ignore' );
+$oli_pdf_distignore = file_get_contents( dirname( __DIR__ ) . '/.distignore' );
+oli_pdf_guard_assert( ! preg_match( '/^composer\s*$/m', $oli_pdf_distignore ), '.distignore does not exclude a bare composer path (would drop vendor/composer)' );
 
 if ( $failures > 0 ) {
 	echo "\n$failures test(s) failed.\n";

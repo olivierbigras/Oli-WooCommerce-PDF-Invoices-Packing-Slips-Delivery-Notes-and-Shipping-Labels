@@ -19,7 +19,7 @@ phpunit.xml.dist
 composer.json
 composer.lock
 composer.phar
-composer
+/composer
 package.json
 package-lock.json
 

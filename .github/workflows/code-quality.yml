@@ -63,7 +63,9 @@ jobs:
       - name: Build release zip with vendor
         run: bash bin/build-release.sh
       - name: Confirm vendor is inside the zip
-        run: unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/autoload.php
+        run: |
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/autoload.php
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/composer/autoload_real.php
       - name: Confirm development files are excluded from the zip
         run: |
           LIST="$(unzip -l dist/oli-pdf-invoices-packing-slips-*.zip)"

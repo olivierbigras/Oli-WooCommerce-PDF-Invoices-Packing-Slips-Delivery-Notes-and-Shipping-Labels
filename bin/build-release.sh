@@ -45,6 +45,7 @@ tar \
 	--exclude-from="$EXCLUDE_FILE" \
 	--exclude='.git' \
 	--exclude='dist' \
+	--exclude='./composer' \
 	-cf - . | tar -xf - -C "$STAGE"
 rm -f "$EXCLUDE_FILE"
 
