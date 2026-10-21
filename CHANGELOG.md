@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Plugin header `Tested up to` now matches `readme.txt` (`7.1`) so Plugin Check no longer reports `mismatched_tested_up_to_header`.
+- Declared `Requires Plugins: woocommerce` in the plugin header.
 - PDF templates assign their locals inside a prefixed closure, so unprefixed `$company_name` / `$item` variables are no longer global.
 
 ### Added
