@@ -14,7 +14,7 @@ if ( ! defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
 }
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.3' );
+	define( 'OLI_PDF_VERSION', '0.1.4' );
 }
 
 $oli_pdf_options = array();

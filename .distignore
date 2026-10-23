@@ -1,5 +1,5 @@
-# Development and tooling — keep these out of the wordpress.org / release zip.
-# readme.txt stays in the package. Internal Markdown is excluded.
+# Development and tooling — keep these out of the distribution zip.
+# readme.txt, LICENSE.txt, languages/, and vendor/ stay in the package.
 
 .git
 .github
@@ -8,6 +8,7 @@
 .gitignore
 
 bin
+tools
 tests
 node_modules
 dist
@@ -28,3 +29,5 @@ IMPLEMENTATION_SUMMARY.md
 README.md
 TESTING.md
 *.md
+
+vendor/bin

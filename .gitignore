@@ -8,5 +8,4 @@
 .DS_Store
 .idea/
 .vscode/
-phpcs.xml.dist
 package-lock.json

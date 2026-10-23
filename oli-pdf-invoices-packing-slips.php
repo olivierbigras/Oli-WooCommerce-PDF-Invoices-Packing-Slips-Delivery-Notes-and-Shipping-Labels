@@ -3,7 +3,7 @@
  * Plugin Name: Oli PDF Invoices & Packing Slips for WooCommerce
  * Plugin URI: https://olivierbigras.com/
  * Description: Generate and print PDF invoices, packing slips, delivery notes, shipping labels, and credit notes for WooCommerce orders. Customize templates, auto-attach to emails, and manage sequential invoice numbering.
- * Version: 0.1.3
+ * Version: 0.1.4
  * Author: Olivier Bigras
  * Author URI: https://olivierbigras.com/
  * License: GPL-2.0-or-later
@@ -23,7 +23,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.3' );
+	define( 'OLI_PDF_VERSION', '0.1.4' );
 }
 
 if ( ! defined( 'OLI_PDF_PLUGIN_FILE' ) ) {
@@ -73,8 +73,23 @@ final class Oli_PDF_Invoices {
 	private function __construct() {
 		add_action( 'before_woocommerce_init', array( $this, 'declare_hpos_compatibility' ) );
 		add_action( 'plugins_loaded', array( $this, 'init' ) );
+		// WordPress 6.7+ loads translations just-in-time from Domain Path.
+		if ( isset( $GLOBALS['wp_version'] ) && version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
+			add_action( 'init', array( $this, 'load_textdomain' ) );
+		}
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+	}
+
+	/**
+	 * Load translations on init for WordPress versions before 6.7.
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain(
+			'oli-pdf-invoices-packing-slips',
+			false,
+			dirname( plugin_basename( OLI_PDF_PLUGIN_FILE ) ) . '/languages'
+		);
 	}
 
 	/**
@@ -93,8 +108,6 @@ final class Oli_PDF_Invoices {
 		if ( ! $this->check_dependencies() ) {
 			return;
 		}
-
-		load_plugin_textdomain( 'oli-pdf-invoices-packing-slips', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 		$this->includes();
 		Oli_PDF\Upgrade::maybe_upgrade();
