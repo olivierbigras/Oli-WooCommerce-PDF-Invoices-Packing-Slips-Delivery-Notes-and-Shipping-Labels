@@ -1,0 +1,12 @@
+/vendor/
+/dist/
+/composer
+/composer.phar
+/composer-setup.php
+/node_modules/
+*.log
+.DS_Store
+.idea/
+.vscode/
+phpcs.xml.dist
+package-lock.json

@@ -1,0 +1,30 @@
+# Development and tooling — keep these out of the wordpress.org / release zip.
+# readme.txt stays in the package. Internal Markdown is excluded.
+
+.git
+.github
+.gitattributes
+.distignore
+.gitignore
+
+bin
+tests
+node_modules
+dist
+
+phpcs.xml
+phpcs.xml.dist
+phpunit.xml
+phpunit.xml.dist
+composer.json
+composer.lock
+composer.phar
+/composer
+package.json
+package-lock.json
+
+CHANGELOG.md
+IMPLEMENTATION_SUMMARY.md
+README.md
+TESTING.md
+*.md

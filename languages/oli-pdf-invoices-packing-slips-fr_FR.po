@@ -1,0 +1,277 @@
+# French translation for Oli PDF Invoices
+# Copyright (C) 2026 Olivier Bigras
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Oli PDF Invoices & Packing Slips for WooCommerce 0.1.3\n"
+"Report-Msgid-Bugs-To: https://olivierbigras.com/\n"
+"POT-Creation-Date: 2026-10-19 12:00:00+00:00\n"
+"PO-Revision-Date: 2026-10-19 12:00:00+00:00\n"
+"Last-Translator: Olivier Bigras <contact@olivierbigras.com>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "This plugin requires WooCommerce to be installed and active."
+msgstr "Ce plugin nécessite que WooCommerce soit installé et actif."
+
+msgid "Oli PDF Invoices requires WooCommerce to be installed and active."
+msgstr "Oli PDF Invoices nécessite que WooCommerce soit installé et actif."
+
+msgid "Oli PDF Invoices requires WooCommerce 9.0 or higher."
+msgstr "Oli PDF Invoices nécessite WooCommerce 9.0 ou supérieur."
+
+msgid "PDF Documents"
+msgstr "Documents PDF"
+
+msgid "Invoice Settings"
+msgstr "Paramètres de facturation"
+
+msgid "Invoice Number Prefix"
+msgstr "Préfixe du numéro de facture"
+
+msgid "Invoice Number Suffix"
+msgstr "Suffixe du numéro de facture"
+
+msgid "Invoice Number Padding"
+msgstr "Remplissage du numéro de facture"
+
+msgid "Start Invoice Number"
+msgstr "Numéro de facture de départ"
+
+msgid "Generate Invoice on Order Status"
+msgstr "Générer la facture sur le statut de commande"
+
+msgid "Attach Invoice to Emails"
+msgstr "Joindre la facture aux e-mails"
+
+msgid "Customer Invoice"
+msgstr "Facture client"
+
+msgid "Completed Order"
+msgstr "Commande terminée"
+
+msgid "Processing Order"
+msgstr "Commande en cours"
+
+msgid "Order On Hold"
+msgstr "Commande en attente"
+
+msgid "Company Information"
+msgstr "Informations sur l'entreprise"
+
+msgid "Company Name"
+msgstr "Nom de l'entreprise"
+
+msgid "Company Address"
+msgstr "Adresse de l'entreprise"
+
+msgid "VAT Number"
+msgstr "Numéro de TVA"
+
+msgid "Tax Number"
+msgstr "Numéro fiscal"
+
+msgid "Company Logo URL"
+msgstr "URL du logo de l'entreprise"
+
+msgid "Template Settings"
+msgstr "Paramètres du modèle"
+
+msgid "Show SKU"
+msgstr "Afficher le SKU"
+
+msgid "Show Weight"
+msgstr "Afficher le poids"
+
+msgid "Show Tax Breakdown"
+msgstr "Afficher le détail des taxes"
+
+msgid "Show Shipping"
+msgstr "Afficher l'expédition"
+
+msgid "Show Payment Method"
+msgstr "Afficher le mode de paiement"
+
+msgid "Show Customer Note"
+msgstr "Afficher la note du client"
+
+msgid "Show Product Images"
+msgstr "Afficher les images des produits"
+
+msgid "Show Product Meta"
+msgstr "Afficher les métadonnées des produits"
+
+msgid "Footer Text"
+msgstr "Texte du pied de page"
+
+msgid "Invoice"
+msgstr "Facture"
+
+msgid "Company"
+msgstr "Entreprise"
+
+msgid "Template"
+msgstr "Modèle"
+
+msgid "Migration"
+msgstr "Migration"
+
+msgid "Migrate from WebToffee Plugin"
+msgstr "Migrer depuis le plugin WebToffee"
+
+msgid "Migrate settings and invoice numbers from the WebToffee Print Invoices plugin."
+msgstr "Migrer les paramètres et les numéros de facture depuis le plugin WebToffee Print Invoices."
+
+msgid "Dry Run (Preview)"
+msgstr "Exécution à blanc (Aperçu)"
+
+msgid "Run Migration"
+msgstr "Exécuter la migration"
+
+msgid "Invalid document type."
+msgstr "Type de document invalide."
+
+msgid "Order not found."
+msgstr "Commande introuvable."
+
+msgid "You do not have permission to view this document."
+msgstr "Vous n'avez pas la permission de voir ce document."
+
+msgid "Invoice Number:"
+msgstr "Numéro de facture :"
+
+msgid "Invoice Date:"
+msgstr "Date de facture :"
+
+msgid "Invoice not generated yet"
+msgstr "Facture pas encore générée"
+
+msgid "View %s"
+msgstr "Voir %s"
+
+msgid "Download %s"
+msgstr "Télécharger %s"
+
+msgid "Invalid request."
+msgstr "Demande invalide."
+
+msgid "PDF Invoice"
+msgstr "Facture PDF"
+
+msgid "Download Invoice"
+msgstr "Télécharger la facture"
+
+msgid "No WebToffee settings found. Nothing to migrate."
+msgstr "Aucun paramètre WebToffee trouvé. Rien à migrer."
+
+msgid "Migration completed: %1$d settings migrated, %2$d orders migrated."
+msgstr "Migration terminée : %1$d paramètres migrés, %2$d commandes migrées."
+
+msgid "Dry run completed. No data was changed."
+msgstr "Exécution à blanc terminée. Aucune donnée n'a été modifiée."
+
+msgid "Download Invoices (PDF)"
+msgstr "Télécharger les factures (PDF)"
+
+msgid "Download Packing Slips (PDF)"
+msgstr "Télécharger les bons de préparation (PDF)"
+
+msgid "Download Delivery Notes (PDF)"
+msgstr "Télécharger les bons de livraison (PDF)"
+
+msgid "No PDF documents could be generated."
+msgstr "Aucun document PDF n'a pu être généré."
+
+msgid "INVOICE"
+msgstr "FACTURE"
+
+msgid "VAT:"
+msgstr "TVA :"
+
+msgid "Tax:"
+msgstr "Taxe :"
+
+msgid "Bill To:"
+msgstr "Facturer à :"
+
+msgid "Order Number:"
+msgstr "Numéro de commande :"
+
+msgid "Order Date:"
+msgstr "Date de commande :"
+
+msgid "Product"
+msgstr "Produit"
+
+msgid "SKU"
+msgstr "SKU"
+
+msgid "Quantity"
+msgstr "Quantité"
+
+msgid "Price"
+msgstr "Prix"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Subtotal:"
+msgstr "Sous-total :"
+
+msgid "Shipping:"
+msgstr "Expédition :"
+
+msgid "Total:"
+msgstr "Total :"
+
+msgid "Payment Method:"
+msgstr "Mode de paiement :"
+
+msgid "Customer Note:"
+msgstr "Note du client :"
+
+msgid "Packing Slip"
+msgstr "Bon de préparation"
+
+msgid "PACKING SLIP"
+msgstr "BON DE PRÉPARATION"
+
+msgid "Billing Address:"
+msgstr "Adresse de facturation :"
+
+msgid "Shipping Address:"
+msgstr "Adresse de livraison :"
+
+msgid "Weight"
+msgstr "Poids"
+
+msgid "Delivery Note"
+msgstr "Bon de livraison"
+
+msgid "DELIVERY NOTE"
+msgstr "BON DE LIVRAISON"
+
+msgid "Date:"
+msgstr "Date :"
+
+msgid "Deliver To:"
+msgstr "Livrer à :"
+
+msgid "Received by:"
+msgstr "Reçu par :"
+
+msgid "Shipping Label"
+msgstr "Étiquette d'expédition"
+
+msgid "From:"
+msgstr "De :"
+
+msgid "To:"
+msgstr "À :"
+
+msgid "Order:"
+msgstr "Commande :"

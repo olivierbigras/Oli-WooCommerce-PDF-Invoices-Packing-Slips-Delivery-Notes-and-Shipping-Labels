@@ -1,0 +1,112 @@
+body.oli-pdf-document {
+	font-family: "DejaVu Sans", sans-serif;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #333;
+}
+
+.oli-pdf-header {
+	margin-bottom: 30px;
+	overflow: hidden;
+}
+
+.oli-pdf-logo {
+	float: left;
+	max-width: 200px;
+	max-height: 100px;
+}
+
+.oli-pdf-company-info {
+	float: right;
+	text-align: right;
+}
+
+.oli-pdf-title {
+	font-size: 24px;
+	font-weight: bold;
+	margin: 20px 0;
+	clear: both;
+	color: {{oli_pdf_primary}};
+}
+
+.oli-pdf-details {
+	margin-bottom: 20px;
+}
+
+.oli-pdf-details table {
+	width: 100%;
+}
+
+.oli-pdf-details td {
+	padding: 5px;
+	vertical-align: top;
+}
+
+.oli-pdf-details .left {
+	width: 50%;
+}
+
+.oli-pdf-details .right {
+	width: 50%;
+	text-align: right;
+}
+
+.oli-pdf-products {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 20px 0;
+}
+
+.oli-pdf-products th {
+	background: {{oli_pdf_secondary}};
+	color: {{oli_pdf_primary}};
+	padding: 10px;
+	text-align: left;
+	border-bottom: 2px solid {{oli_pdf_primary}};
+}
+
+.oli-pdf-products td {
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.oli-pdf-product-image {
+	width: {{oli_pdf_image_size}}px;
+	height: {{oli_pdf_image_size}}px;
+	object-fit: contain;
+}
+
+.oli-pdf-totals {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.oli-pdf-totals td {
+	padding: 5px;
+	text-align: right;
+}
+
+.oli-pdf-totals .total-label {
+	font-weight: bold;
+}
+
+.oli-pdf-totals .grand-total,
+.oli-pdf-grand-total {
+	font-size: 16px;
+	font-weight: bold;
+	border-top: 2px solid {{oli_pdf_primary}};
+	padding-top: 10px;
+	color: {{oli_pdf_primary}};
+}
+
+.oli-pdf-footer {
+	margin-top: 40px;
+	padding-top: 20px;
+	border-top: 1px solid #ddd;
+	text-align: center;
+	font-size: 10px;
+}
+
+.text-right {
+	text-align: right;
+}

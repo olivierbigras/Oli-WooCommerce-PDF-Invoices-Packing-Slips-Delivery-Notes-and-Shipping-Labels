@@ -1,0 +1,92 @@
+name: Code Quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  php-lint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['7.4', '8.0', '8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          tools: composer
+      - name: PHP Lint
+        run: find . -name "*.php" ! -path "./vendor/*" ! -path "./dist/*" -print0 | xargs -0 -n1 php -l
+
+  phpcs:
+    name: PHPCS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-security-blocking
+      - name: Run PHPCS
+        run: vendor/bin/phpcs --standard=phpcs.xml
+
+  webtoffee-format-tests:
+    name: WebToffee format tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+      - name: Run standalone migration format tests
+        run: php tests/run-webtoffee-format-tests.php
+      - name: Run upgrade and guardrail tests
+        run: php tests/run-upgrade-and-guardrail-tests.php
+
+  release-zip:
+    name: Release zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+      - name: Build release zip with vendor
+        run: bash bin/build-release.sh
+      - name: Confirm vendor is inside the zip
+        run: |
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/autoload.php
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/composer/autoload_real.php
+      - name: Confirm development files are excluded from the zip
+        run: |
+          LIST="$(unzip -l dist/oli-pdf-invoices-packing-slips-*.zip)"
+          echo "$LIST" | grep -q 'oli-pdf-invoices-packing-slips/readme.txt'
+          ! echo "$LIST" | grep -E 'oli-pdf-invoices-packing-slips/(tests|bin|\.github)/'
+          ! echo "$LIST" | grep -E 'oli-pdf-invoices-packing-slips/(phpcs\.xml|phpunit\.xml|composer\.(json|lock)|package(-lock)?\.json|\.gitignore|CHANGELOG\.md|README\.md|TESTING\.md|IMPLEMENTATION_SUMMARY\.md)(\s|$)'
+
+  plugin-check:
+    name: Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+      - name: Build release zip with vendor
+        run: bash bin/build-release.sh
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './dist/oli-pdf-invoices-packing-slips'
+          ignore-warnings: 'true'
