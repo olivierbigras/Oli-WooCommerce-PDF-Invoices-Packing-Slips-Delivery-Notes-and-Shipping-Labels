@@ -14,6 +14,12 @@
 	border: 1px solid #333;
 }
 
+.oli-pdf-label .oli-pdf-logo {
+	display: block;
+	margin: 0 0 6px 0;
+	border: 0;
+}
+
 .oli-pdf-label-heading {
 	font-weight: bold;
 	text-transform: uppercase;

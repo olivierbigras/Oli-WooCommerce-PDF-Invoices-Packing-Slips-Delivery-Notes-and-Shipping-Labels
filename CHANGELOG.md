@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Production dependency is `dompdf/dompdf` `^3.1.6`. The zip build no longer passes `--no-security-blocking`; `composer audit --no-dev --locked` must stay clean.
-- Invoice (and other document) logos use explicit CSS/`<img>` width and height so Dompdf 3 does not collapse PNG or SVG logos to ~1px.
+- Logos are fitted from natural size (getimagesize / SVG viewBox) into 200×80 (invoice) or 150×80 (packing slip / delivery note) without upscaling. Header clearfix replaces `overflow:hidden`; logos are not floated. Rasters larger than ~600px are downscaled via a WP intermediate or cached `wp_get_image_editor` result.
 - Admin View/Download buttons use complete translatable strings per document type (`View invoice`, …) instead of concatenating the slug.
 - `tools/build-zip.sh` compiles `.mo` / `.l10n.php` in the staging directory only.
 

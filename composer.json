@@ -28,7 +28,7 @@
         "phpcs": "phpcs --standard=phpcs.xml.dist",
         "phpcbf": "phpcbf --standard=phpcs.xml.dist",
         "lint": "find . -name '*.php' ! -path './vendor/*' -print0 | xargs -0 -n1 php -l",
-        "test": "php tests/run-webtoffee-format-tests.php && php tests/run-upgrade-and-guardrail-tests.php",
+        "test": "php tests/run-webtoffee-format-tests.php && php tests/run-upgrade-and-guardrail-tests.php && php tests/run-logo-fit-tests.php",
         "build": "bash tools/build-zip.sh"
     },
     "config": {

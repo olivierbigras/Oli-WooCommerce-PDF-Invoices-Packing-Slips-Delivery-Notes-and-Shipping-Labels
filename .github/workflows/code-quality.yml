@@ -45,10 +45,15 @@ jobs:
         with:
           php-version: '8.1'
           coverage: none
+          tools: composer
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
       - name: Run standalone migration format tests
         run: php tests/run-webtoffee-format-tests.php
       - name: Run upgrade and guardrail tests
         run: php tests/run-upgrade-and-guardrail-tests.php
+      - name: Run logo fit tests
+        run: php tests/run-logo-fit-tests.php
 
   release-zip:
     name: Release zip

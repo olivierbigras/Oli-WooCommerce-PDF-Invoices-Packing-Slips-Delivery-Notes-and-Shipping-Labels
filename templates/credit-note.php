@@ -20,7 +20,6 @@ defined( 'ABSPATH' ) || exit;
 	$footer_text     = get_option( 'oli_pdf_footer_text', '' );
 	$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
 	$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
-	$logo_src        = \Oli_PDF\Generator::get_logo_src();
 	$refunds         = $order->get_refunds();
 	$refund_total    = $order->get_total_refunded();
 	?>
@@ -31,22 +30,22 @@ defined( 'ABSPATH' ) || exit;
 	<title><?php esc_html_e( 'Credit Note', 'oli-pdf-invoices-packing-slips' ); ?></title>
 </head>
 <body class="oli-pdf-document">
-	<div class="oli-pdf-header">
-		<?php if ( $logo_src ) : ?>
-			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo" width="200" height="80">
-		<?php endif; ?>
-		<div class="oli-pdf-company-info">
-			<?php if ( $company_name ) : ?>
-				<strong><?php echo esc_html( $company_name ); ?></strong><br>
-			<?php endif; ?>
-			<?php if ( $company_address ) : ?>
-				<?php echo wp_kses_post( nl2br( $company_address ) ); ?><br>
-			<?php endif; ?>
-			<?php if ( $vat_number ) : ?>
-				<?php esc_html_e( 'VAT:', 'oli-pdf-invoices-packing-slips' ); ?> <?php echo esc_html( $vat_number ); ?>
-			<?php endif; ?>
-		</div>
-	</div>
+	<table class="oli-pdf-header" role="presentation" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="oli-pdf-logo-cell"><?php \Oli_PDF\Generator::render_logo_img( 'credit-note', $company_name ); ?></td>
+			<td class="oli-pdf-company-info">
+				<?php if ( $company_name ) : ?>
+					<strong><?php echo esc_html( $company_name ); ?></strong><br>
+				<?php endif; ?>
+				<?php if ( $company_address ) : ?>
+					<?php echo wp_kses_post( nl2br( $company_address ) ); ?><br>
+				<?php endif; ?>
+				<?php if ( $vat_number ) : ?>
+					<?php esc_html_e( 'VAT:', 'oli-pdf-invoices-packing-slips' ); ?> <?php echo esc_html( $vat_number ); ?>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
 
 	<div class="oli-pdf-title"><?php esc_html_e( 'CREDIT NOTE', 'oli-pdf-invoices-packing-slips' ); ?></div>
 

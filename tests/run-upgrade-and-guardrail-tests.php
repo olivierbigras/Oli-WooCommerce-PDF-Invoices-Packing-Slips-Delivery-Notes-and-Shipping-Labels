@@ -179,13 +179,21 @@ $oli_pdf_distignore = file_get_contents( dirname( __DIR__ ) . '/.distignore' );
 oli_pdf_guard_assert( ! preg_match( '/^composer\s*$/m', $oli_pdf_distignore ), '.distignore does not exclude a bare composer path (would drop vendor/composer)' );
 
 $oli_pdf_docs_css = file_get_contents( dirname( __DIR__ ) . '/assets/css/documents.css' );
+preg_match( '/\.oli-pdf-header\s*\{([^}]+)\}/', $oli_pdf_docs_css, $oli_pdf_header_block );
+oli_pdf_guard_assert(
+	isset( $oli_pdf_header_block[1] ) && false === strpos( $oli_pdf_header_block[1], 'overflow' ),
+	'Header CSS does not use overflow:hidden (Dompdf 3 crushes floated logos)'
+);
 preg_match( '/\.oli-pdf-logo\s*\{([^}]+)\}/', $oli_pdf_docs_css, $oli_pdf_logo_block );
 oli_pdf_guard_assert(
-	isset( $oli_pdf_logo_block[1] )
-	&& preg_match( '/(?:^|[\s;])width:\s*\d+px/', $oli_pdf_logo_block[1] )
-	&& preg_match( '/(?:^|[\s;])height:\s*\d+px/', $oli_pdf_logo_block[1] ),
-	'Invoice logo CSS sets explicit width and height'
+	isset( $oli_pdf_logo_block[1] ) && false === strpos( $oli_pdf_logo_block[1], 'float' ),
+	'Logo CSS does not float (Dompdf 3 + overflow collapsed the logo)'
 );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_docs_css, 'clear: both' ), 'Header uses a clearfix instead of overflow:hidden' );
+
+$oli_pdf_invoice = file_get_contents( dirname( __DIR__ ) . '/templates/invoice.php' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_invoice, 'render_logo_img' ), 'Invoice uses the fitted-logo helper' );
+oli_pdf_guard_assert( false === strpos( $oli_pdf_invoice, 'width="200" height="80"' ), 'Invoice does not hard-code a 200x80 logo box' );
 
 $oli_pdf_admin = file_get_contents( dirname( __DIR__ ) . '/includes/class-oli-pdf-admin.php' );
 oli_pdf_guard_assert( false !== strpos( $oli_pdf_admin, "__( 'View invoice'" ), 'Admin uses a complete View invoice string' );
