@@ -4,7 +4,7 @@ Tags: woocommerce, pdf, invoice, packing slip, shipping label
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 9.0
@@ -110,6 +110,11 @@ No requests are made to PayPal, Google, Cloudflare Turnstile, Carto, Leaflet, Go
 
 == Changelog ==
 
+= 0.1.4 - 2026-10-23 =
+* Distribution zip includes production vendor/ (Dompdf 3.1.6), LICENSE.txt (GPLv2 or later), and languages/ (.pot 0.1.4, fr_FR .mo and .l10n.php). Translations load on init only before WordPress 6.7.
+* Logos keep their aspect ratio (no overflow:hidden + float crush; no forced 150×80 stretch). Giant rasters are capped ~600px. Admin actions use full translatable labels per document type.
+* Shipping labels keep the logo above From:; local logo paths stay inside uploads or the plugin directory; uninstall.php removes oli_pdf_* / olipdf_* options and the logo cache.
+
 = 0.1.3 - 2026-10-21 =
 * Align Tested up to 7.1 in the plugin header and readme.txt
 * Scope PDF template variables so they are not unprefixed globals
@@ -143,6 +148,9 @@ No requests are made to PayPal, Google, Cloudflare Turnstile, Carto, Leaflet, Go
 * RTL and multilingual support
 
 == Upgrade Notice ==
+
+= 0.1.4 =
+Distribution zip ships Dompdf via Composer --no-dev, LICENSE.txt, and language files.
 
 = 0.1.3 =
 Plugin Check header alignment (Tested up to 7.1), prefixed template scope, and a cleaner release zip.

@@ -34,7 +34,7 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-security-blocking
       - name: Run PHPCS
-        run: vendor/bin/phpcs --standard=phpcs.xml
+        run: vendor/bin/phpcs --standard=phpcs.xml.dist
 
   webtoffee-format-tests:
     name: WebToffee format tests
@@ -45,10 +45,15 @@ jobs:
         with:
           php-version: '8.1'
           coverage: none
+          tools: composer
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
       - name: Run standalone migration format tests
         run: php tests/run-webtoffee-format-tests.php
       - name: Run upgrade and guardrail tests
         run: php tests/run-upgrade-and-guardrail-tests.php
+      - name: Run logo fit tests
+        run: php tests/run-logo-fit-tests.php
 
   release-zip:
     name: Release zip
@@ -61,16 +66,21 @@ jobs:
           coverage: none
           tools: composer
       - name: Build release zip with vendor
-        run: bash bin/build-release.sh
+        run: bash tools/build-zip.sh
       - name: Confirm vendor is inside the zip
         run: |
           unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/autoload.php
           unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/composer/autoload_real.php
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep LICENSE.txt
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep languages/oli-pdf-invoices-packing-slips.pot
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep languages/oli-pdf-invoices-packing-slips-fr_FR.mo
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep languages/oli-pdf-invoices-packing-slips-fr_FR.l10n.php
+          ! unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep -q vendor/bin/
       - name: Confirm development files are excluded from the zip
         run: |
           LIST="$(unzip -l dist/oli-pdf-invoices-packing-slips-*.zip)"
           echo "$LIST" | grep -q 'oli-pdf-invoices-packing-slips/readme.txt'
-          ! echo "$LIST" | grep -E 'oli-pdf-invoices-packing-slips/(tests|bin|\.github)/'
+          ! echo "$LIST" | grep -E 'oli-pdf-invoices-packing-slips/(tests|bin|tools|\.github)/'
           ! echo "$LIST" | grep -E 'oli-pdf-invoices-packing-slips/(phpcs\.xml|phpunit\.xml|composer\.(json|lock)|package(-lock)?\.json|\.gitignore|CHANGELOG\.md|README\.md|TESTING\.md|IMPLEMENTATION_SUMMARY\.md)(\s|$)'
 
   plugin-check:
@@ -84,7 +94,7 @@ jobs:
           coverage: none
           tools: composer
       - name: Build release zip with vendor
-        run: bash bin/build-release.sh
+        run: bash tools/build-zip.sh
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@v1
         with:

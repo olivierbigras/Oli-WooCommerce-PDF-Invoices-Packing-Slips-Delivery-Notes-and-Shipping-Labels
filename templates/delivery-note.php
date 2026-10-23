@@ -13,8 +13,6 @@ defined( 'ABSPATH' ) || exit;
 ( static function ( $order ) {
 	$company_name = get_option( 'oli_pdf_company_name', '' );
 	$show_sku     = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
-	$logo_src     = \Oli_PDF\Generator::get_logo_src();
-
 	?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -24,9 +22,7 @@ defined( 'ABSPATH' ) || exit;
 </head>
 <body class="oli-pdf-document">
 	<div class="oli-pdf-header">
-		<?php if ( $logo_src ) : ?>
-			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo">
-		<?php endif; ?>
+		<?php \Oli_PDF\Generator::render_logo_img( 'delivery-note', $company_name ); ?>
 	</div>
 
 	<div class="oli-pdf-title">

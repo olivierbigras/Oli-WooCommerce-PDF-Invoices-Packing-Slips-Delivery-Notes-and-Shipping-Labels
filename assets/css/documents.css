@@ -6,19 +6,31 @@ body.oli-pdf-document {
 }
 
 .oli-pdf-header {
+	width: 100%;
 	margin-bottom: 30px;
-	overflow: hidden;
+	border-collapse: collapse;
+}
+
+.oli-pdf-header::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.oli-pdf-logo-cell {
+	vertical-align: top;
+	width: 1%;
+	padding: 0 12px 0 0;
 }
 
 .oli-pdf-logo {
-	float: left;
-	max-width: 200px;
-	max-height: 100px;
+	display: block;
+	border: 0;
 }
 
 .oli-pdf-company-info {
-	float: right;
 	text-align: right;
+	vertical-align: top;
 }
 
 .oli-pdf-title {

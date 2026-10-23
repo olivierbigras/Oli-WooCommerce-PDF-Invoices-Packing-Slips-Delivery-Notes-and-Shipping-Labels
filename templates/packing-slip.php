@@ -16,8 +16,6 @@ defined( 'ABSPATH' ) || exit;
 	$show_sku        = 'yes' === get_option( 'oli_pdf_show_sku', 'yes' );
 	$show_weight     = 'yes' === get_option( 'oli_pdf_show_weight', 'yes' );
 	$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
-	$logo_src        = \Oli_PDF\Generator::get_logo_src();
-
 	?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -26,20 +24,19 @@ defined( 'ABSPATH' ) || exit;
 	<title><?php esc_html_e( 'Packing Slip', 'oli-pdf-invoices-packing-slips' ); ?></title>
 </head>
 <body class="oli-pdf-document">
-	<div class="oli-pdf-header">
-		<?php if ( $logo_src ) : ?>
-			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo">
-		<?php endif; ?>
-
-		<div class="oli-pdf-company-info">
-			<?php if ( $company_name ) : ?>
-				<strong><?php echo esc_html( $company_name ); ?></strong><br>
-			<?php endif; ?>
-			<?php if ( $company_address ) : ?>
-				<?php echo wp_kses_post( nl2br( $company_address ) ); ?>
-			<?php endif; ?>
-		</div>
-	</div>
+	<table class="oli-pdf-header" role="presentation" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="oli-pdf-logo-cell"><?php \Oli_PDF\Generator::render_logo_img( 'packing-slip', $company_name ); ?></td>
+			<td class="oli-pdf-company-info">
+				<?php if ( $company_name ) : ?>
+					<strong><?php echo esc_html( $company_name ); ?></strong><br>
+				<?php endif; ?>
+				<?php if ( $company_address ) : ?>
+					<?php echo wp_kses_post( nl2br( $company_address ) ); ?>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
 
 	<div class="oli-pdf-title">
 		<?php esc_html_e( 'PACKING SLIP', 'oli-pdf-invoices-packing-slips' ); ?>

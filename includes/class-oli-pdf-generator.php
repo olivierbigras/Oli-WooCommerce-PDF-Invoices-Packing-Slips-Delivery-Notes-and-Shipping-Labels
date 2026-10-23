@@ -484,8 +484,12 @@ class Generator {
 			return '';
 		}
 
+		$ext  = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
 		$mime = wp_check_filetype( $path );
 		$type = ! empty( $mime['type'] ) ? $mime['type'] : 'image/png';
+		if ( 'svg' === $ext ) {
+			$type = 'image/svg+xml';
+		}
 		$data = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file for PDF embed.
 
 		if ( false === $data ) {
@@ -496,36 +500,65 @@ class Generator {
 	}
 
 	/**
-	 * Resolve a media URL or attachment ID to a local file path.
+	 * Allowed logo file extensions.
 	 *
-	 * @param string|int $url_or_id URL or attachment ID.
-	 * @return string
+	 * @return string[]
 	 */
-	public static function resolve_local_image_path( $url_or_id ) {
-		if ( is_numeric( $url_or_id ) ) {
-			$path = get_attached_file( (int) $url_or_id );
-			return $path ? $path : '';
-		}
+	public static function get_allowed_logo_extensions() {
+		return array( 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg' );
+	}
 
-		$url = esc_url_raw( $url_or_id );
-		if ( ! $url ) {
+	/**
+	 * Whether a path has an allowed image extension.
+	 *
+	 * @param string $path File path or URL.
+	 * @return bool
+	 */
+	public static function has_allowed_logo_extension( $path ) {
+		$ext = strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) );
+		return in_array( $ext, self::get_allowed_logo_extensions(), true );
+	}
+
+	/**
+	 * realpath must sit inside uploads or the plugin directory.
+	 *
+	 * @param string $path Candidate path (may contain ..).
+	 * @return string Normalized path or empty.
+	 */
+	public static function confine_local_image_path( $path ) {
+		if ( ! $path || ! self::has_allowed_logo_extension( $path ) ) {
 			return '';
 		}
 
-		$attachment_id = attachment_url_to_postid( $url );
-		if ( $attachment_id ) {
-			$path = get_attached_file( $attachment_id );
-			if ( $path && file_exists( $path ) ) {
-				return $path;
+		$real = realpath( $path );
+		if ( ! $real || ! is_file( $real ) || ! is_readable( $real ) ) {
+			return '';
+		}
+
+		if ( ! self::has_allowed_logo_extension( $real ) ) {
+			return '';
+		}
+
+		$allowed = array();
+		$uploads = function_exists( 'wp_upload_dir' ) ? wp_upload_dir() : array();
+		if ( ! empty( $uploads['basedir'] ) ) {
+			$upload_root = realpath( $uploads['basedir'] );
+			if ( $upload_root ) {
+				$allowed[] = $upload_root;
+			}
+		}
+		if ( defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
+			$plugin_root = realpath( OLI_PDF_PLUGIN_DIR );
+			if ( $plugin_root ) {
+				$allowed[] = $plugin_root;
 			}
 		}
 
-		$uploads = wp_upload_dir();
-		if ( ! empty( $uploads['baseurl'] ) && 0 === strpos( $url, $uploads['baseurl'] ) ) {
-			$relative = str_replace( $uploads['baseurl'], '', $url );
-			$path     = trailingslashit( $uploads['basedir'] ) . ltrim( $relative, '/' );
-			if ( file_exists( $path ) ) {
-				return $path;
+		$normalized = str_replace( '\\', '/', $real );
+		foreach ( $allowed as $root ) {
+			$prefix = rtrim( str_replace( '\\', '/', $root ), '/' );
+			if ( $normalized === $prefix || 0 === strpos( $normalized, $prefix . '/' ) ) {
+				return $real;
 			}
 		}
 
@@ -533,18 +566,343 @@ class Generator {
 	}
 
 	/**
-	 * Get company logo as a data URI.
+	 * Resolve a media URL or attachment ID to a local file path.
+	 *
+	 * Rejects traversal (uploads/../../wp-config.php), files outside uploads
+	 * or the plugin directory, and non-image extensions.
+	 *
+	 * @param string|int $url_or_id URL or attachment ID.
+	 * @return string
+	 */
+	public static function resolve_local_image_path( $url_or_id ) {
+		if ( is_numeric( $url_or_id ) ) {
+			$path = get_attached_file( (int) $url_or_id );
+			return $path ? self::confine_local_image_path( $path ) : '';
+		}
+
+		$url = esc_url_raw( $url_or_id );
+		if ( ! $url || ! self::has_allowed_logo_extension( $url ) ) {
+			return '';
+		}
+
+		$attachment_id = attachment_url_to_postid( $url );
+		if ( $attachment_id ) {
+			$path = get_attached_file( $attachment_id );
+			$safe = $path ? self::confine_local_image_path( $path ) : '';
+			if ( $safe ) {
+				return $safe;
+			}
+		}
+
+		$uploads = wp_upload_dir();
+		if ( ! empty( $uploads['baseurl'] ) && 0 === strpos( $url, $uploads['baseurl'] ) ) {
+			$relative = str_replace( $uploads['baseurl'], '', $url );
+			$path     = trailingslashit( $uploads['basedir'] ) . ltrim( $relative, '/' );
+			$safe     = self::confine_local_image_path( $path );
+			if ( $safe ) {
+				return $safe;
+			}
+		}
+
+		if ( defined( 'OLI_PDF_PLUGIN_URL' ) && OLI_PDF_PLUGIN_URL && 0 === strpos( $url, OLI_PDF_PLUGIN_URL ) && defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
+			$relative = str_replace( OLI_PDF_PLUGIN_URL, '', $url );
+			$path     = trailingslashit( OLI_PDF_PLUGIN_DIR ) . ltrim( $relative, '/' );
+			$safe     = self::confine_local_image_path( $path );
+			if ( $safe ) {
+				return $safe;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Cache directory for downscaled logos (under uploads).
+	 *
+	 * @return string
+	 */
+	public static function get_logo_cache_dir() {
+		$uploads = function_exists( 'wp_upload_dir' ) ? wp_upload_dir() : array();
+		if ( empty( $uploads['basedir'] ) ) {
+			return '';
+		}
+		return trailingslashit( $uploads['basedir'] ) . 'oli-pdf-logos';
+	}
+
+	/**
+	 * Delete cached logo files. Optionally keep one current file.
+	 *
+	 * @param string $keep Absolute path to keep.
+	 */
+	public static function purge_logo_cache( $keep = '' ) {
+		$dir = self::get_logo_cache_dir();
+		if ( ! $dir || ! is_dir( $dir ) ) {
+			return;
+		}
+
+		$keep_real = $keep ? realpath( $keep ) : '';
+		$files     = glob( trailingslashit( $dir ) . 'logo-*' );
+		if ( ! $files ) {
+			return;
+		}
+
+		foreach ( $files as $file ) {
+			if ( ! is_file( $file ) ) {
+				continue;
+			}
+			if ( $keep_real && realpath( $file ) === $keep_real ) {
+				continue;
+			}
+			if ( function_exists( 'wp_delete_file' ) ) {
+				wp_delete_file( $file );
+			} else {
+				unlink( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- standalone / uninstall fallback.
+			}
+		}
+	}
+
+	/**
+	 * Max embed pixels for a raster logo (avoids Dompdf OOM on huge uploads).
+	 */
+	const LOGO_RASTER_MAX_EDGE = 600;
+
+	/**
+	 * Display box (CSS pixels) for a document type. Never used to upscale.
+	 *
+	 * @param string $type Document type.
+	 * @return int[] { max_width, max_height }
+	 */
+	public static function get_logo_max_box( $type ) {
+		if ( in_array( $type, array( 'packing-slip', 'delivery-note', 'shipping-label' ), true ) ) {
+			return array( 150, 80 );
+		}
+		return array( 200, 80 );
+	}
+
+	/**
+	 * Fit natural pixels into a box without upscaling.
+	 *
+	 * @param float $natural_w Natural width.
+	 * @param float $natural_h Natural height.
+	 * @param int   $max_w     Max width.
+	 * @param int   $max_h     Max height.
+	 * @return int[] { width, height }
+	 */
+	public static function fit_logo_box( $natural_w, $natural_h, $max_w, $max_h ) {
+		$natural_w = (float) $natural_w;
+		$natural_h = (float) $natural_h;
+		$max_w     = max( 1, (int) $max_w );
+		$max_h     = max( 1, (int) $max_h );
+
+		if ( $natural_w <= 0 || $natural_h <= 0 ) {
+			return array( $max_w, $max_h );
+		}
+
+		$scale = min( 1.0, $max_w / $natural_w, $max_h / $natural_h );
+
+		return array(
+			max( 1, (int) round( $natural_w * $scale ) ),
+			max( 1, (int) round( $natural_h * $scale ) ),
+		);
+	}
+
+	/**
+	 * Read SVG width/height from attributes or viewBox.
+	 *
+	 * @param string $svg SVG markup.
+	 * @return float[] { width, height } or { 0, 0 }
+	 */
+	public static function read_svg_dimensions( $svg ) {
+		if ( ! is_string( $svg ) || '' === $svg ) {
+			return array( 0.0, 0.0 );
+		}
+
+		$width  = 0.0;
+		$height = 0.0;
+		if ( preg_match( '/\bwidth\s*=\s*["\']\s*([0-9.]+)/i', $svg, $match_w ) ) {
+			$width = (float) $match_w[1];
+		}
+		if ( preg_match( '/\bheight\s*=\s*["\']\s*([0-9.]+)/i', $svg, $match_h ) ) {
+			$height = (float) $match_h[1];
+		}
+		if ( $width > 0 && $height > 0 ) {
+			return array( $width, $height );
+		}
+
+		if ( preg_match( '/\bviewBox\s*=\s*["\']\s*([0-9.+-eE]+)\s+([0-9.+-eE]+)\s+([0-9.+-eE]+)\s+([0-9.+-eE]+)/i', $svg, $view ) ) {
+			return array( (float) $view[3], (float) $view[4] );
+		}
+
+		return array( 0.0, 0.0 );
+	}
+
+	/**
+	 * Natural pixel size of a local image (raster via getimagesize, SVG via markup).
+	 *
+	 * @param string $path File path.
+	 * @return float[] { width, height } or { 0, 0 }
+	 */
+	public static function get_image_pixel_size( $path ) {
+		if ( ! $path || ! is_readable( $path ) ) {
+			return array( 0.0, 0.0 );
+		}
+
+		$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
+		if ( 'svg' === $ext ) {
+			$svg = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local SVG for dimensions.
+			return self::read_svg_dimensions( false === $svg ? '' : $svg );
+		}
+
+		$info = @getimagesize( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- missing/corrupt files return false.
+		if ( ! empty( $info[0] ) && ! empty( $info[1] ) ) {
+			return array( (float) $info[0], (float) $info[1] );
+		}
+
+		return array( 0.0, 0.0 );
+	}
+
+	/**
+	 * Downscale a raster logo so the longest edge is at most LOGO_RASTER_MAX_EDGE.
+	 *
+	 * Prefers a WordPress intermediate size, then a cached wp_get_image_editor result.
+	 *
+	 * @param string $path Original file path.
+	 * @return string Path to use (original or cached resize).
+	 */
+	public static function prepare_logo_file( $path ) {
+		if ( ! $path || ! is_readable( $path ) ) {
+			return '';
+		}
+
+		$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
+		if ( 'svg' === $ext ) {
+			self::purge_logo_cache();
+			return $path;
+		}
+
+		$size = self::get_image_pixel_size( $path );
+		if ( $size[0] <= 0 || $size[1] <= 0 ) {
+			return $path;
+		}
+		if ( $size[0] <= self::LOGO_RASTER_MAX_EDGE && $size[1] <= self::LOGO_RASTER_MAX_EDGE ) {
+			self::purge_logo_cache();
+			return $path;
+		}
+
+		$url = get_option( 'oli_pdf_logo_url', '' );
+		if ( $url && function_exists( 'attachment_url_to_postid' ) ) {
+			$attachment_id = attachment_url_to_postid( $url );
+			if ( $attachment_id ) {
+				$src = wp_get_attachment_image_src( $attachment_id, array( self::LOGO_RASTER_MAX_EDGE, self::LOGO_RASTER_MAX_EDGE ) );
+				if ( $src && ! empty( $src[0] ) ) {
+					$intermediate = self::resolve_local_image_path( $src[0] );
+					if ( $intermediate && $intermediate !== $path && is_readable( $intermediate ) ) {
+						$inter_size = self::get_image_pixel_size( $intermediate );
+						if ( $inter_size[0] > 0 && $inter_size[0] <= self::LOGO_RASTER_MAX_EDGE && $inter_size[1] <= self::LOGO_RASTER_MAX_EDGE ) {
+							return $intermediate;
+						}
+					}
+				}
+			}
+		}
+
+		if ( ! function_exists( 'wp_get_image_editor' ) ) {
+			return $path;
+		}
+
+		$cache = self::get_logo_cache_dir();
+		if ( ! $cache || ! wp_mkdir_p( $cache ) ) {
+			return $path;
+		}
+
+		$dest = trailingslashit( $cache ) . 'logo-' . md5( $path . '|' . (string) filesize( $path ) . '|' . (string) filemtime( $path ) ) . '.png';
+		self::purge_logo_cache( $dest );
+		if ( is_readable( $dest ) ) {
+			return $dest;
+		}
+
+		$editor = wp_get_image_editor( $path );
+		if ( is_wp_error( $editor ) ) {
+			return $path;
+		}
+
+		$editor->resize( self::LOGO_RASTER_MAX_EDGE, self::LOGO_RASTER_MAX_EDGE, false );
+		$saved = $editor->save( $dest );
+		if ( is_wp_error( $saved ) || empty( $saved['path'] ) || ! is_readable( $saved['path'] ) ) {
+			return $path;
+		}
+
+		return $saved['path'];
+	}
+
+	/**
+	 * Logo src plus fitted width/height for a document type.
+	 *
+	 * @param string $type Document type.
+	 * @return array{src:string,width:int,height:int}
+	 */
+	public static function get_logo_for_document( $type ) {
+		$empty = array(
+			'src'    => '',
+			'width'  => 0,
+			'height' => 0,
+		);
+
+		$url = get_option( 'oli_pdf_logo_url', '' );
+		if ( ! $url ) {
+			return $empty;
+		}
+
+		$path = self::resolve_local_image_path( $url );
+		if ( ! $path ) {
+			return $empty;
+		}
+
+		$path = self::prepare_logo_file( $path );
+		if ( ! $path ) {
+			return $empty;
+		}
+
+		$natural = self::get_image_pixel_size( $path );
+		$box     = self::get_logo_max_box( $type );
+		$fitted  = self::fit_logo_box( $natural[0], $natural[1], $box[0], $box[1] );
+
+		return array(
+			'src'    => self::file_to_data_uri( $path ),
+			'width'  => $fitted[0],
+			'height' => $fitted[1],
+		);
+	}
+
+	/**
+	 * Print a fitted logo <img> when a company logo is configured.
+	 *
+	 * @param string $type Document type.
+	 * @param string $alt  Alt text.
+	 */
+	public static function render_logo_img( $type, $alt = '' ) {
+		$logo = self::get_logo_for_document( $type );
+		if ( '' === $logo['src'] || $logo['width'] < 1 || $logo['height'] < 1 ) {
+			return;
+		}
+
+		printf(
+			'<img src="%s" alt="%s" class="oli-pdf-logo" width="%d" height="%d" />',
+			esc_attr( $logo['src'] ),
+			esc_attr( $alt ),
+			(int) $logo['width'],
+			(int) $logo['height']
+		);
+	}
+
+	/**
+	 * Get company logo as a data URI (capped raster).
 	 *
 	 * @return string
 	 */
 	public static function get_logo_src() {
-		$url = get_option( 'oli_pdf_logo_url', '' );
-		if ( ! $url ) {
-			return '';
-		}
-
-		$path = self::resolve_local_image_path( $url );
-		return $path ? self::file_to_data_uri( $path ) : '';
+		$logo = self::get_logo_for_document( 'invoice' );
+		return $logo['src'];
 	}
 
 	/**

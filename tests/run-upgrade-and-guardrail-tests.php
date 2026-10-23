@@ -14,7 +14,7 @@ if ( ! defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
 }
 
 if ( ! defined( 'OLI_PDF_VERSION' ) ) {
-	define( 'OLI_PDF_VERSION', '0.1.3' );
+	define( 'OLI_PDF_VERSION', '0.1.4' );
 }
 
 $oli_pdf_options = array();
@@ -177,6 +177,42 @@ $oli_pdf_gitattributes = file_get_contents( dirname( __DIR__ ) . '/.gitattribute
 oli_pdf_guard_assert( false !== strpos( $oli_pdf_gitattributes, 'export-ignore' ), '.gitattributes uses export-ignore' );
 $oli_pdf_distignore = file_get_contents( dirname( __DIR__ ) . '/.distignore' );
 oli_pdf_guard_assert( ! preg_match( '/^composer\s*$/m', $oli_pdf_distignore ), '.distignore does not exclude a bare composer path (would drop vendor/composer)' );
+
+$oli_pdf_docs_css = file_get_contents( dirname( __DIR__ ) . '/assets/css/documents.css' );
+preg_match( '/\.oli-pdf-header\s*\{([^}]+)\}/', $oli_pdf_docs_css, $oli_pdf_header_block );
+oli_pdf_guard_assert(
+	isset( $oli_pdf_header_block[1] ) && false === strpos( $oli_pdf_header_block[1], 'overflow' ),
+	'Header CSS does not use overflow:hidden (Dompdf 3 crushes floated logos)'
+);
+preg_match( '/\.oli-pdf-logo\s*\{([^}]+)\}/', $oli_pdf_docs_css, $oli_pdf_logo_block );
+oli_pdf_guard_assert(
+	isset( $oli_pdf_logo_block[1] ) && false === strpos( $oli_pdf_logo_block[1], 'float' ),
+	'Logo CSS does not float (Dompdf 3 + overflow collapsed the logo)'
+);
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_docs_css, 'clear: both' ), 'Header uses a clearfix instead of overflow:hidden' );
+
+$oli_pdf_invoice = file_get_contents( dirname( __DIR__ ) . '/templates/invoice.php' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_invoice, 'render_logo_img' ), 'Invoice uses the fitted-logo helper' );
+oli_pdf_guard_assert( false === strpos( $oli_pdf_invoice, 'width="200" height="80"' ), 'Invoice does not hard-code a 200x80 logo box' );
+
+$oli_pdf_admin = file_get_contents( dirname( __DIR__ ) . '/includes/class-oli-pdf-admin.php' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_admin, "__( 'View invoice'" ), 'Admin uses a complete View invoice string' );
+oli_pdf_guard_assert( false === strpos( $oli_pdf_admin, 'View %s' ), 'Admin does not build View labels from a slug placeholder' );
+
+$oli_pdf_label = file_get_contents( dirname( __DIR__ ) . '/templates/shipping-label.php' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_label, 'oli-pdf-label-logo' ), 'Shipping label keeps the logo in its own block' );
+preg_match( '/oli-pdf-label-logo.*?oli-pdf-label-heading/s', $oli_pdf_label, $oli_pdf_label_order );
+oli_pdf_guard_assert( ! empty( $oli_pdf_label_order ), 'Shipping label renders the logo block above From:' );
+
+$oli_pdf_uninstall = file_get_contents( dirname( __DIR__ ) . '/uninstall.php' );
+oli_pdf_guard_assert( is_readable( dirname( __DIR__ ) . '/uninstall.php' ), 'uninstall.php exists' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_uninstall, 'WP_UNINSTALL_PLUGIN' ), 'uninstall.php requires WP_UNINSTALL_PLUGIN' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_uninstall, 'oli_pdf_' ) && false !== strpos( $oli_pdf_uninstall, 'olipdf_' ), 'uninstall.php deletes oli_pdf_ and olipdf_ options' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_uninstall, 'oli-pdf-logos' ), 'uninstall.php removes the logo cache directory' );
+
+$oli_pdf_build = file_get_contents( dirname( __DIR__ ) . '/tools/build-zip.sh' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_build, 'make-mo "$STAGE/languages"' ), 'build-zip compiles .mo in staging' );
+oli_pdf_guard_assert( false === strpos( $oli_pdf_build, 'make-mo "$ROOT/languages"' ), 'build-zip does not rewrite git-tracked languages/' );
 
 if ( $failures > 0 ) {
 	echo "\n$failures test(s) failed.\n";

@@ -25,7 +25,6 @@ defined( 'ABSPATH' ) || exit;
 	$show_note       = 'yes' === get_option( 'oli_pdf_show_customer_note', 'yes' );
 	$show_images     = 'yes' === get_option( 'oli_pdf_show_product_images', 'no' );
 	$show_meta       = 'yes' === get_option( 'oli_pdf_show_product_meta', 'yes' );
-	$logo_src        = \Oli_PDF\Generator::get_logo_src();
 	?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -34,25 +33,25 @@ defined( 'ABSPATH' ) || exit;
 	<title><?php esc_html_e( 'Invoice', 'oli-pdf-invoices-packing-slips' ); ?></title>
 </head>
 <body class="oli-pdf-document">
-	<div class="oli-pdf-header">
-		<?php if ( $logo_src ) : ?>
-			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo">
-		<?php endif; ?>
-		<div class="oli-pdf-company-info">
-			<?php if ( $company_name ) : ?>
-				<strong><?php echo esc_html( $company_name ); ?></strong><br>
-			<?php endif; ?>
-			<?php if ( $company_address ) : ?>
-				<?php echo wp_kses_post( nl2br( $company_address ) ); ?><br>
-			<?php endif; ?>
-			<?php if ( $vat_number ) : ?>
-				<?php esc_html_e( 'VAT:', 'oli-pdf-invoices-packing-slips' ); ?> <?php echo esc_html( $vat_number ); ?><br>
-			<?php endif; ?>
-			<?php if ( $tax_number ) : ?>
-				<?php esc_html_e( 'Tax:', 'oli-pdf-invoices-packing-slips' ); ?> <?php echo esc_html( $tax_number ); ?><br>
-			<?php endif; ?>
-		</div>
-	</div>
+	<table class="oli-pdf-header" role="presentation" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="oli-pdf-logo-cell"><?php \Oli_PDF\Generator::render_logo_img( 'invoice', $company_name ); ?></td>
+			<td class="oli-pdf-company-info">
+				<?php if ( $company_name ) : ?>
+					<strong><?php echo esc_html( $company_name ); ?></strong><br>
+				<?php endif; ?>
+				<?php if ( $company_address ) : ?>
+					<?php echo wp_kses_post( nl2br( $company_address ) ); ?><br>
+				<?php endif; ?>
+				<?php if ( $vat_number ) : ?>
+					<?php esc_html_e( 'VAT:', 'oli-pdf-invoices-packing-slips' ); ?> <?php echo esc_html( $vat_number ); ?><br>
+				<?php endif; ?>
+				<?php if ( $tax_number ) : ?>
+					<?php esc_html_e( 'Tax:', 'oli-pdf-invoices-packing-slips' ); ?> <?php echo esc_html( $tax_number ); ?><br>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
 
 	<div class="oli-pdf-title"><?php esc_html_e( 'INVOICE', 'oli-pdf-invoices-packing-slips' ); ?></div>
 

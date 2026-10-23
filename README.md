@@ -29,7 +29,7 @@ A comprehensive WooCommerce plugin for generating professional PDF invoices, pac
 4. Activate through WordPress admin
 5. Configure at WooCommerce > PDF Documents
 
-> **Note**: A development checkout needs `composer install --no-dev`. The release zip from `bash bin/build-release.sh` already includes `vendor/` and works without Composer on the server.
+> **Note**: A development checkout needs `composer install --no-dev`. The release zip from `bash tools/build-zip.sh` already includes `vendor/` and works without Composer on the server.
 
 ### Requirements
 
@@ -65,7 +65,7 @@ php tests/run-upgrade-and-guardrail-tests.php
 
 Build a release zip (includes vendor/):
 ```bash
-bash bin/build-release.sh
+bash tools/build-zip.sh
 ```
 
 ### Translations
