@@ -132,28 +132,50 @@ class Admin {
 				<?php else : ?>
 					<p>
 						<a href="<?php echo esc_url( $this->get_pdf_url( $order->get_id(), $type, 'view' ) ); ?>" class="button" target="_blank">
-							<?php
-							printf(
-								/* translators: %s: document type */
-								esc_html__( 'View %s', 'oli-pdf-invoices-packing-slips' ),
-								esc_html( ucfirst( str_replace( '-', ' ', $type ) ) )
-							);
-							?>
+							<?php echo esc_html( $this->get_document_action_label( $type, 'view' ) ); ?>
 						</a>
 						<a href="<?php echo esc_url( $this->get_pdf_url( $order->get_id(), $type, 'download' ) ); ?>" class="button">
-							<?php
-							printf(
-								/* translators: %s: document type */
-								esc_html__( 'Download %s', 'oli-pdf-invoices-packing-slips' ),
-								esc_html( ucfirst( str_replace( '-', ' ', $type ) ) )
-							);
-							?>
+							<?php echo esc_html( $this->get_document_action_label( $type, 'download' ) ); ?>
 						</a>
 					</p>
 				<?php endif; ?>
 			<?php endforeach; ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Full translatable View/Download labels (never built from the slug).
+	 *
+	 * @param string $type   Document type.
+	 * @param string $action view or download.
+	 * @return string
+	 */
+	private function get_document_action_label( $type, $action ) {
+		$labels = array(
+			'invoice'        => array(
+				'view'     => __( 'View invoice', 'oli-pdf-invoices-packing-slips' ),
+				'download' => __( 'Download invoice', 'oli-pdf-invoices-packing-slips' ),
+			),
+			'packing-slip'   => array(
+				'view'     => __( 'View packing slip', 'oli-pdf-invoices-packing-slips' ),
+				'download' => __( 'Download packing slip', 'oli-pdf-invoices-packing-slips' ),
+			),
+			'delivery-note'  => array(
+				'view'     => __( 'View delivery note', 'oli-pdf-invoices-packing-slips' ),
+				'download' => __( 'Download delivery note', 'oli-pdf-invoices-packing-slips' ),
+			),
+			'shipping-label' => array(
+				'view'     => __( 'View shipping label', 'oli-pdf-invoices-packing-slips' ),
+				'download' => __( 'Download shipping label', 'oli-pdf-invoices-packing-slips' ),
+			),
+			'credit-note'    => array(
+				'view'     => __( 'View credit note', 'oli-pdf-invoices-packing-slips' ),
+				'download' => __( 'Download credit note', 'oli-pdf-invoices-packing-slips' ),
+			),
+		);
+
+		return isset( $labels[ $type ][ $action ] ) ? $labels[ $type ][ $action ] : '';
 	}
 
 	/**

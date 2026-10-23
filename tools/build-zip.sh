@@ -29,13 +29,6 @@ if [ ! -f "$ROOT/composer.lock" ]; then
 	exit 1
 fi
 
-# Compile translation binaries from the versioned .po (also committed in languages/).
-if command -v wp >/dev/null 2>&1; then
-	echo "Compiling languages (.mo and .l10n.php)..."
-	wp i18n make-mo "$ROOT/languages" --allow-root
-	wp i18n make-php "$ROOT/languages" --allow-root
-fi
-
 echo "Installing production dependencies (composer.lock, --no-dev --optimize-autoloader)..."
 $COMPOSER_BIN install --no-dev --optimize-autoloader --prefer-dist --no-interaction
 
@@ -66,6 +59,13 @@ tar \
 	--exclude='./composer' \
 	-cf - . | tar -xf - -C "$STAGE"
 rm -f "$EXCLUDE_FILE"
+
+# Compile .mo / .l10n.php in the staging copy only — do not rewrite git-tracked languages/.
+if command -v wp >/dev/null 2>&1; then
+	echo "Compiling languages in staging (.mo and .l10n.php)..."
+	wp i18n make-mo "$STAGE/languages" --allow-root
+	wp i18n make-php "$STAGE/languages" --allow-root
+fi
 
 # Belt-and-suspenders: never ship Composer CLI stubs from vendor/.
 rm -rf "$STAGE/vendor/bin"

@@ -484,8 +484,12 @@ class Generator {
 			return '';
 		}
 
+		$ext  = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
 		$mime = wp_check_filetype( $path );
 		$type = ! empty( $mime['type'] ) ? $mime['type'] : 'image/png';
+		if ( 'svg' === $ext ) {
+			$type = 'image/svg+xml';
+		}
 		$data = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file for PDF embed.
 
 		if ( false === $data ) {

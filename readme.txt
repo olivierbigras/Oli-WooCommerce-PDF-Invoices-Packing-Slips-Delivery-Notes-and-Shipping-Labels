@@ -112,6 +112,7 @@ No requests are made to PayPal, Google, Cloudflare Turnstile, Carto, Leaflet, Go
 
 = 0.1.4 - 2026-10-23 =
 * Distribution zip includes production vendor/ (Dompdf 3.1.6), LICENSE.txt (GPLv2 or later), and languages/ (.pot 0.1.4, fr_FR .mo and .l10n.php). Translations load on init only before WordPress 6.7.
+* Invoice logos use explicit width/height (PNG and SVG). Admin actions use full translatable labels per document type.
 
 = 0.1.3 - 2026-10-21 =
 * Align Tested up to 7.1 in the plugin header and readme.txt

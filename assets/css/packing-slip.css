@@ -1,6 +1,7 @@
 .oli-pdf-logo {
-	max-width: 150px;
-	max-height: 80px;
+	display: block;
+	width: 150px;
+	height: 80px;
 }
 
 .oli-pdf-title {

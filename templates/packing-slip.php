@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 <body class="oli-pdf-document">
 	<div class="oli-pdf-header">
 		<?php if ( $logo_src ) : ?>
-			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo">
+			<img src="<?php echo esc_attr( $logo_src ); ?>" alt="<?php echo esc_attr( $company_name ); ?>" class="oli-pdf-logo" width="150" height="80">
 		<?php endif; ?>
 
 		<div class="oli-pdf-company-info">

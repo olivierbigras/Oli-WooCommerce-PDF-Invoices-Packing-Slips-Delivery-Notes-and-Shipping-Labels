@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-10-23T05:22:20+00:00\n"
-"PO-Revision-Date: 2026-10-23 05:22:00+00:00\n"
+"PO-Revision-Date: 2026-10-23 05:32:00+00:00\n"
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Domain: oli-pdf-invoices-packing-slips\n"
@@ -197,23 +197,11 @@ msgstr "Date de facture :"
 msgid "Invoice not generated yet"
 msgstr "Facture pas encore générée"
 
-#. translators: %s: document type
-#: includes/class-oli-pdf-admin.php:138
-#, php-format
-msgid "View %s"
-msgstr "Voir %s"
-
-#. translators: %s: document type
-#: includes/class-oli-pdf-admin.php:147
-#, php-format
-msgid "Download %s"
-msgstr "Télécharger %s"
-
-#: includes/class-oli-pdf-admin.php:197
+#: includes/class-oli-pdf-admin.php:219
 msgid "Invalid request."
 msgstr "Demande invalide."
 
-#: includes/class-oli-pdf-admin.php:214
+#: includes/class-oli-pdf-admin.php:236
 msgid "PDF Invoice"
 msgstr "Facture PDF"
 
@@ -419,7 +407,7 @@ msgstr "Date de l’avoir :"
 msgid "Credit note not generated yet"
 msgstr "Avoir pas encore généré"
 
-#: includes/class-oli-pdf-admin.php:222
+#: includes/class-oli-pdf-admin.php:244
 msgid "PDF Credit Note"
 msgstr "Avoir PDF"
 
@@ -564,3 +552,43 @@ msgstr "Remboursement enregistré pour cette commande."
 #: templates/credit-note.php:126
 msgid "Total credited:"
 msgstr "Total crédité :"
+
+#: includes/class-oli-pdf-admin.php:157
+msgid "View invoice"
+msgstr "Voir la facture"
+
+#: includes/class-oli-pdf-admin.php:158
+msgid "Download invoice"
+msgstr "Télécharger la facture"
+
+#: includes/class-oli-pdf-admin.php:161
+msgid "View packing slip"
+msgstr "Voir le bon de préparation"
+
+#: includes/class-oli-pdf-admin.php:162
+msgid "Download packing slip"
+msgstr "Télécharger le bon de préparation"
+
+#: includes/class-oli-pdf-admin.php:165
+msgid "View delivery note"
+msgstr "Voir le bon de livraison"
+
+#: includes/class-oli-pdf-admin.php:166
+msgid "Download delivery note"
+msgstr "Télécharger le bon de livraison"
+
+#: includes/class-oli-pdf-admin.php:169
+msgid "View shipping label"
+msgstr "Voir l’étiquette"
+
+#: includes/class-oli-pdf-admin.php:170
+msgid "Download shipping label"
+msgstr "Télécharger l’étiquette"
+
+#: includes/class-oli-pdf-admin.php:173
+msgid "View credit note"
+msgstr "Voir l’avoir"
+
+#: includes/class-oli-pdf-admin.php:174
+msgid "Download credit note"
+msgstr "Télécharger l’avoir"

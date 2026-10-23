@@ -12,8 +12,9 @@ body.oli-pdf-document {
 
 .oli-pdf-logo {
 	float: left;
-	max-width: 200px;
-	max-height: 100px;
+	display: block;
+	width: 200px;
+	height: 80px;
 }
 
 .oli-pdf-company-info {

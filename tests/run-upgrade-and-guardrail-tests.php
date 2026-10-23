@@ -178,6 +178,23 @@ oli_pdf_guard_assert( false !== strpos( $oli_pdf_gitattributes, 'export-ignore' 
 $oli_pdf_distignore = file_get_contents( dirname( __DIR__ ) . '/.distignore' );
 oli_pdf_guard_assert( ! preg_match( '/^composer\s*$/m', $oli_pdf_distignore ), '.distignore does not exclude a bare composer path (would drop vendor/composer)' );
 
+$oli_pdf_docs_css = file_get_contents( dirname( __DIR__ ) . '/assets/css/documents.css' );
+preg_match( '/\.oli-pdf-logo\s*\{([^}]+)\}/', $oli_pdf_docs_css, $oli_pdf_logo_block );
+oli_pdf_guard_assert(
+	isset( $oli_pdf_logo_block[1] )
+	&& preg_match( '/(?:^|[\s;])width:\s*\d+px/', $oli_pdf_logo_block[1] )
+	&& preg_match( '/(?:^|[\s;])height:\s*\d+px/', $oli_pdf_logo_block[1] ),
+	'Invoice logo CSS sets explicit width and height'
+);
+
+$oli_pdf_admin = file_get_contents( dirname( __DIR__ ) . '/includes/class-oli-pdf-admin.php' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_admin, "__( 'View invoice'" ), 'Admin uses a complete View invoice string' );
+oli_pdf_guard_assert( false === strpos( $oli_pdf_admin, 'View %s' ), 'Admin does not build View labels from a slug placeholder' );
+
+$oli_pdf_build = file_get_contents( dirname( __DIR__ ) . '/tools/build-zip.sh' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_build, 'make-mo "$STAGE/languages"' ), 'build-zip compiles .mo in staging' );
+oli_pdf_guard_assert( false === strpos( $oli_pdf_build, 'make-mo "$ROOT/languages"' ), 'build-zip does not rewrite git-tracked languages/' );
+
 if ( $failures > 0 ) {
 	echo "\n$failures test(s) failed.\n";
 	exit( 1 );
