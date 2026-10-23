@@ -29,12 +29,20 @@ if [ ! -f "$ROOT/composer.lock" ]; then
 	exit 1
 fi
 
-echo "Installing production dependencies (composer.lock, --no-dev --optimize-autoloader)..."
-COMPOSER_FLAGS=(install --no-dev --optimize-autoloader --prefer-dist --no-interaction)
-if $COMPOSER_BIN install --help 2>/dev/null | grep -q -- '--no-security-blocking'; then
-	COMPOSER_FLAGS+=(--no-security-blocking)
+# Compile translation binaries from the versioned .po (also committed in languages/).
+if command -v wp >/dev/null 2>&1; then
+	echo "Compiling languages (.mo and .l10n.php)..."
+	wp i18n make-mo "$ROOT/languages" --allow-root
+	wp i18n make-php "$ROOT/languages" --allow-root
 fi
-$COMPOSER_BIN "${COMPOSER_FLAGS[@]}"
+
+echo "Installing production dependencies (composer.lock, --no-dev --optimize-autoloader)..."
+$COMPOSER_BIN install --no-dev --optimize-autoloader --prefer-dist --no-interaction
+
+if ! $COMPOSER_BIN audit --no-dev --locked; then
+	echo "composer audit --no-dev --locked failed." >&2
+	exit 1
+fi
 
 if [ ! -f "$ROOT/vendor/autoload.php" ]; then
 	echo "vendor/autoload.php missing after composer install." >&2
@@ -72,6 +80,14 @@ if [ ! -f "$STAGE/LICENSE.txt" ]; then
 fi
 if [ ! -f "$STAGE/languages/oli-pdf-invoices-packing-slips.pot" ]; then
 	echo "Staged zip is missing languages/*.pot." >&2
+	exit 1
+fi
+if [ ! -f "$STAGE/languages/oli-pdf-invoices-packing-slips-fr_FR.mo" ]; then
+	echo "Staged zip is missing compiled languages/*.mo." >&2
+	exit 1
+fi
+if [ ! -f "$STAGE/languages/oli-pdf-invoices-packing-slips-fr_FR.l10n.php" ]; then
+	echo "Staged zip is missing compiled languages/*.l10n.php." >&2
 	exit 1
 fi
 if [ -d "$STAGE/vendor/bin" ]; then

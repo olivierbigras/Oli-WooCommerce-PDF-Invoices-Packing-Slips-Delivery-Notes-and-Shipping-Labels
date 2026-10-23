@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.4] - 2026-10-23
 
 ### Added
-- Distribution zip via `tools/build-zip.sh` (`composer install --no-dev --optimize-autoloader` from the versioned lockfile): production `vendor/` (Dompdf), `LICENSE.txt` (GPLv2 or later), and `languages/` including the `.pot`. Translations load on `init` only on WordPress older than 6.7; `phpcs.xml.dist` excludes `/vendor/*` and `/languages/*`.
+- Distribution zip via `tools/build-zip.sh` (`composer install --no-dev --optimize-autoloader` from the versioned lockfile): production `vendor/` (Dompdf 3.1.6), `LICENSE.txt` (GPLv2 or later), and `languages/` (`.pot` 0.1.4, `fr_FR.po`, compiled `.mo` and `.l10n.php`). Translations load on `init` only on WordPress older than 6.7; `phpcs.xml.dist` excludes `/vendor/*` and `/languages/*`.
+
+### Changed
+- Production dependency is `dompdf/dompdf` `^3.1.6`. The zip build no longer passes `--no-security-blocking`; `composer audit --no-dev --locked` must stay clean.
 
 ## [0.1.3] - 2026-10-21
 

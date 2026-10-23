@@ -68,6 +68,8 @@ jobs:
           unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep vendor/composer/autoload_real.php
           unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep LICENSE.txt
           unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep languages/oli-pdf-invoices-packing-slips.pot
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep languages/oli-pdf-invoices-packing-slips-fr_FR.mo
+          unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep languages/oli-pdf-invoices-packing-slips-fr_FR.l10n.php
           ! unzip -l dist/oli-pdf-invoices-packing-slips-*.zip | grep -q vendor/bin/
       - name: Confirm development files are excluded from the zip
         run: |

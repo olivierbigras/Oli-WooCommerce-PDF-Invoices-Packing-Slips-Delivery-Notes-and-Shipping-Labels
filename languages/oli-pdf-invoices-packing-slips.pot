@@ -2,372 +2,563 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Oli PDF Invoices & Packing Slips for WooCommerce 0.1.3\n"
-"Report-Msgid-Bugs-To: https://olivierbigras.com/\n"
-"POT-Creation-Date: 2026-10-19 12:00:00+00:00\n"
+"Project-Id-Version: Oli PDF Invoices & Packing Slips for WooCommerce 0.1.4\n"
+"Report-Msgid-Bugs-To: https://github.com/olivierbigras/Oli-WooCommerce-PDF-Invoices-Packing-Slips-Delivery-Notes-and-Shipping-Labels/issues\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2026-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2026-10-23T05:22:20+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: oli-pdf-invoices-packing-slips\n"
 
+#. Plugin Name of the plugin
 #: oli-pdf-invoices-packing-slips.php
-msgid "This plugin requires WooCommerce to be installed and active."
+msgid "Oli PDF Invoices & Packing Slips for WooCommerce"
 msgstr ""
 
+#. Plugin URI of the plugin
+#. Author URI of the plugin
 #: oli-pdf-invoices-packing-slips.php
-msgid "Oli PDF Invoices requires WooCommerce to be installed and active."
+msgid "https://olivierbigras.com/"
 msgstr ""
 
+#. Description of the plugin
 #: oli-pdf-invoices-packing-slips.php
-msgid "Oli PDF Invoices requires WooCommerce 9.0 or higher."
+msgid "Generate and print PDF invoices, packing slips, delivery notes, shipping labels, and credit notes for WooCommerce orders. Customize templates, auto-attach to emails, and manage sequential invoice numbering."
 msgstr ""
 
-#: includes/class-oli-pdf-settings.php
+#. Author of the plugin
+#: oli-pdf-invoices-packing-slips.php
+msgid "Olivier Bigras"
+msgstr ""
+
+#: includes/class-oli-pdf-admin.php:84
+#: includes/class-oli-pdf-settings.php:32
+#: includes/class-oli-pdf-settings.php:33
 msgid "PDF Documents"
 msgstr ""
 
-#: includes/class-oli-pdf-settings.php
-msgid "Invoice Settings"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Invoice Number Prefix"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Invoice Number Suffix"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Invoice Number Padding"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Start Invoice Number"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Generate Invoice on Order Status"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Attach Invoice to Emails"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Customer Invoice"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Completed Order"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Processing Order"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Order On Hold"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Company Information"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Company Name"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Company Address"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "VAT Number"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Tax Number"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Company Logo URL"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Template Settings"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show SKU"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Weight"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Tax Breakdown"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Shipping"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Payment Method"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Customer Note"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Product Images"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Show Product Meta"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Footer Text"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Invoice"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Company"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Template"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Migration"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Migrate from WebToffee Plugin"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Migrate settings and invoice numbers from the WebToffee Print Invoices plugin."
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Dry Run (Preview)"
-msgstr ""
-
-#: includes/class-oli-pdf-settings.php
-msgid "Run Migration"
-msgstr ""
-
-#: includes/class-oli-pdf-generator.php
-msgid "Invalid document type."
-msgstr ""
-
-#: includes/class-oli-pdf-generator.php
-msgid "Order not found."
-msgstr ""
-
-#: includes/class-oli-pdf-generator.php
-msgid "You do not have permission to view this document."
-msgstr ""
-
-#: includes/class-oli-pdf-admin.php
+#: includes/class-oli-pdf-admin.php:111
+#: templates/invoice.php:73
 msgid "Invoice Number:"
 msgstr ""
 
-#: includes/class-oli-pdf-admin.php
+#: includes/class-oli-pdf-admin.php:113
+#: templates/invoice.php:74
 msgid "Invoice Date:"
 msgstr ""
 
-#: includes/class-oli-pdf-admin.php
+#: includes/class-oli-pdf-admin.php:120
+#: templates/credit-note.php:61
+msgid "Credit Note Number:"
+msgstr ""
+
+#: includes/class-oli-pdf-admin.php:122
+#: templates/credit-note.php:62
+msgid "Credit Note Date:"
+msgstr ""
+
+#: includes/class-oli-pdf-admin.php:129
 msgid "Invoice not generated yet"
 msgstr ""
 
-#: includes/class-oli-pdf-admin.php
+#: includes/class-oli-pdf-admin.php:131
+msgid "Credit note not generated yet"
+msgstr ""
+
+#. translators: %s: document type
+#: includes/class-oli-pdf-admin.php:138
+#, php-format
 msgid "View %s"
 msgstr ""
 
-#: includes/class-oli-pdf-admin.php
+#. translators: %s: document type
+#: includes/class-oli-pdf-admin.php:147
+#, php-format
 msgid "Download %s"
 msgstr ""
 
-#: includes/class-oli-pdf-admin.php
+#: includes/class-oli-pdf-admin.php:197
 msgid "Invalid request."
 msgstr ""
 
-#: includes/class-oli-pdf-admin.php
+#: includes/class-oli-pdf-admin.php:214
 msgid "PDF Invoice"
 msgstr ""
 
-#: includes/class-oli-pdf-my-account.php
-msgid "Download Invoice"
+#: includes/class-oli-pdf-admin.php:222
+msgid "PDF Credit Note"
 msgstr ""
 
-#: includes/class-oli-pdf-migration.php
-msgid "No WebToffee settings found. Nothing to migrate."
-msgstr ""
-
-#: includes/class-oli-pdf-migration.php
-msgid "Migration completed: %1$d settings migrated, %2$d orders migrated."
-msgstr ""
-
-#: includes/class-oli-pdf-migration.php
-msgid "Dry run completed. No data was changed."
-msgstr ""
-
-#: includes/class-oli-pdf-bulk-actions.php
+#: includes/class-oli-pdf-bulk-actions.php:34
 msgid "Download Invoices (PDF)"
 msgstr ""
 
-#: includes/class-oli-pdf-bulk-actions.php
+#: includes/class-oli-pdf-bulk-actions.php:35
 msgid "Download Packing Slips (PDF)"
 msgstr ""
 
-#: includes/class-oli-pdf-bulk-actions.php
+#: includes/class-oli-pdf-bulk-actions.php:36
 msgid "Download Delivery Notes (PDF)"
 msgstr ""
 
-#: includes/class-oli-pdf-bulk-actions.php
+#: includes/class-oli-pdf-bulk-actions.php:37
+msgid "Download Shipping Labels (PDF)"
+msgstr ""
+
+#: includes/class-oli-pdf-bulk-actions.php:38
+msgid "Download Credit Notes (PDF)"
+msgstr ""
+
+#: includes/class-oli-pdf-bulk-actions.php:130
 msgid "No PDF documents could be generated."
 msgstr ""
 
-#: templates/invoice.php
+#: includes/class-oli-pdf-generator.php:43
+msgid "Invalid document type."
+msgstr ""
+
+#: includes/class-oli-pdf-generator.php:48
+msgid "Order not found."
+msgstr ""
+
+#: includes/class-oli-pdf-generator.php:52
+msgid "You do not have permission to view this document."
+msgstr ""
+
+#: includes/class-oli-pdf-migration.php:246
+msgid "No WebToffee settings found. Nothing to migrate."
+msgstr ""
+
+#. translators: 1: number of settings, 2: number of orders
+#: includes/class-oli-pdf-migration.php:257
+#, php-format
+msgid "Migration completed: %1$d settings migrated, %2$d orders migrated."
+msgstr ""
+
+#: includes/class-oli-pdf-migration.php:263
+msgid "Dry run completed. No data was changed."
+msgstr ""
+
+#: includes/class-oli-pdf-my-account.php:36
+msgid "Download Invoice"
+msgstr ""
+
+#: includes/class-oli-pdf-my-account.php:43
+msgid "Download Credit Note"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:91
+msgid "Invoice Settings"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:94
+msgid "Invoice Number Prefix"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:98
+msgid "Invoice Number Suffix"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:102
+msgid "Invoice Number Padding"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:107
+msgid "Start Invoice Number"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:112
+msgid "Generate Invoice on Order Status"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:118
+msgid "Attach Invoice to Emails"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:124
+msgid "Enable Credit Notes for Refunds"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:128
+msgid "Credit Note Number Prefix"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:133
+msgid "Credit Note Number Suffix"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:137
+msgid "Credit Note Number Padding"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:142
+msgid "Start Credit Note Number"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:149
+msgid "Shipping Label Settings"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:152
+msgid "Label Size"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:159
+msgid "Custom Size"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:164
+msgid "Custom Width (mm)"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:169
+msgid "Custom Height (mm)"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:174
+msgid "Labels Per Sheet"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:177
+msgid "How many copies of a label to print on one sheet. Combined with columns and rows."
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:180
+msgid "Columns"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:185
+msgid "Rows"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:192
+msgid "Company Information"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:195
+msgid "Company Name"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:199
+msgid "Company Address"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:203
+msgid "VAT Number"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:207
+msgid "Tax Number"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:211
+msgid "Company Logo URL"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:213
+msgid "Use a Media Library URL on this site. Remote/CDN images are converted to a local copy when possible."
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:218
+msgid "Template Settings"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:221
+msgid "Primary Color"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:226
+msgid "Secondary Color"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:231
+msgid "Show SKU"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:235
+msgid "Show Weight"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:239
+msgid "Show Tax Breakdown"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:243
+msgid "Show Shipping"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:247
+msgid "Show Payment Method"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:251
+msgid "Show Customer Note"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:255
+msgid "Show Product Images"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:259
+msgid "Product Image Size (px)"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:264
+msgid "Show Product Meta"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:268
+msgid "Footer Text"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:284
+msgid "Processing"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:285
+msgid "Completed"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:304
+msgid "Customer Invoice"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:305
+msgid "Completed Order"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:306
+msgid "Processing Order"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:307
+msgid "Order On Hold"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:308
+msgid "Refunded Order"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:337
+#: templates/invoice.php:34
 msgid "Invoice"
 msgstr ""
 
-#: templates/invoice.php
+#: includes/class-oli-pdf-settings.php:338
+msgid "Labels"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:339
+msgid "Company"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:340
+msgid "Template"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:341
+msgid "Migration"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:376
+msgid "Migrate from WebToffee Plugin"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:377
+msgid "Migrate settings and invoice numbers from the WebToffee Print Invoices plugin (print-invoices-packing-slip-labels-for-woocommerce 5.x). Existing WebToffee data is never deleted."
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:379
+msgid "Dry Run (Preview)"
+msgstr ""
+
+#: includes/class-oli-pdf-settings.php:380
+msgid "Run Migration"
+msgstr ""
+
+#: oli-pdf-invoices-packing-slips.php:173
+msgid "This plugin requires WooCommerce to be installed and active."
+msgstr ""
+
+#: oli-pdf-invoices-packing-slips.php:245
+msgid "Oli PDF Invoices requires WooCommerce to be installed and active."
+msgstr ""
+
+#: oli-pdf-invoices-packing-slips.php:255
+msgid "Oli PDF Invoices requires WooCommerce 9.0 or higher."
+msgstr ""
+
+#: oli-pdf-invoices-packing-slips.php:265
+msgid "Oli PDF Invoices is missing Composer dependencies. Run composer install --no-dev or install the release zip that includes vendor/."
+msgstr ""
+
+#: templates/credit-note.php:31
+msgid "Credit Note"
+msgstr ""
+
+#: templates/credit-note.php:46
+#: templates/invoice.php:49
 msgid "VAT:"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Tax:"
+#: templates/credit-note.php:51
+msgid "CREDIT NOTE"
 msgstr ""
 
-#: templates/invoice.php
-msgid "INVOICE"
-msgstr ""
-
-#: templates/invoice.php
+#: templates/credit-note.php:57
+#: templates/invoice.php:63
 msgid "Bill To:"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Invoice Number:"
+#: templates/credit-note.php:64
+msgid "Original Invoice:"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Invoice Date:"
-msgstr ""
-
-#: templates/invoice.php
+#: templates/credit-note.php:66
+#: templates/delivery-note.php:37
+#: templates/invoice.php:75
+#: templates/packing-slip.php:49
 msgid "Order Number:"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Order Date:"
+#: templates/credit-note.php:76
+#: templates/invoice.php:86
+#: templates/packing-slip.php:72
+msgid "Image"
 msgstr ""
 
-#: templates/invoice.php
+#: templates/credit-note.php:78
+#: templates/delivery-note.php:49
+#: templates/invoice.php:88
+#: templates/packing-slip.php:74
 msgid "Product"
 msgstr ""
 
-#: templates/invoice.php
+#: templates/credit-note.php:80
+#: templates/delivery-note.php:51
+#: templates/invoice.php:90
+#: templates/packing-slip.php:76
 msgid "SKU"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Quantity"
+#: templates/credit-note.php:82
+msgid "Qty refunded"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Price"
+#: templates/credit-note.php:83
+msgid "Amount"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Total"
+#: templates/credit-note.php:118
+msgid "Refund recorded against this order."
 msgstr ""
 
-#: templates/invoice.php
-msgid "Subtotal:"
+#: templates/credit-note.php:126
+msgid "Total credited:"
 msgstr ""
 
-#: templates/invoice.php
-msgid "Shipping:"
-msgstr ""
-
-#: templates/invoice.php
-msgid "Total:"
-msgstr ""
-
-#: templates/invoice.php
-msgid "Payment Method:"
-msgstr ""
-
-#: templates/invoice.php
-msgid "Customer Note:"
-msgstr ""
-
-#: templates/packing-slip.php
-msgid "Packing Slip"
-msgstr ""
-
-#: templates/packing-slip.php
-msgid "PACKING SLIP"
-msgstr ""
-
-#: templates/packing-slip.php
-msgid "Billing Address:"
-msgstr ""
-
-#: templates/packing-slip.php
-msgid "Shipping Address:"
-msgstr ""
-
-#: templates/packing-slip.php
-msgid "Weight"
-msgstr ""
-
-#: templates/delivery-note.php
+#: templates/delivery-note.php:23
 msgid "Delivery Note"
 msgstr ""
 
-#: templates/delivery-note.php
+#: templates/delivery-note.php:33
 msgid "DELIVERY NOTE"
 msgstr ""
 
-#: templates/delivery-note.php
+#: templates/delivery-note.php:38
+#: templates/shipping-label.php:35
 msgid "Date:"
 msgstr ""
 
-#: templates/delivery-note.php
+#: templates/delivery-note.php:42
 msgid "Deliver To:"
 msgstr ""
 
-#: templates/delivery-note.php
+#: templates/delivery-note.php:53
+#: templates/invoice.php:92
+#: templates/packing-slip.php:81
+msgid "Quantity"
+msgstr ""
+
+#: templates/delivery-note.php:71
 msgid "Received by:"
 msgstr ""
 
-#: templates/shipping-label.php
-msgid "Shipping Label"
+#: templates/invoice.php:52
+#: templates/invoice.php:158
+msgid "Tax:"
 msgstr ""
 
-#: templates/shipping-label.php
+#: templates/invoice.php:57
+msgid "INVOICE"
+msgstr ""
+
+#: templates/invoice.php:76
+#: templates/packing-slip.php:50
+msgid "Order Date:"
+msgstr ""
+
+#: templates/invoice.php:93
+msgid "Price"
+msgstr ""
+
+#: templates/invoice.php:94
+msgid "Total"
+msgstr ""
+
+#: templates/invoice.php:140
+msgid "Subtotal:"
+msgstr ""
+
+#: templates/invoice.php:145
+msgid "Shipping:"
+msgstr ""
+
+#: templates/invoice.php:163
+msgid "Total:"
+msgstr ""
+
+#: templates/invoice.php:169
+msgid "Payment Method:"
+msgstr ""
+
+#: templates/invoice.php:173
+#: templates/packing-slip.php:113
+msgid "Customer Note:"
+msgstr ""
+
+#: templates/packing-slip.php:26
+msgid "Packing Slip"
+msgstr ""
+
+#: templates/packing-slip.php:45
+msgid "PACKING SLIP"
+msgstr ""
+
+#: templates/packing-slip.php:57
+msgid "Billing Address:"
+msgstr ""
+
+#: templates/packing-slip.php:61
+msgid "Shipping Address:"
+msgstr ""
+
+#: templates/packing-slip.php:79
+msgid "Weight"
+msgstr ""
+
+#: templates/shipping-label.php:19
 msgid "From:"
 msgstr ""
 
-#: templates/shipping-label.php
+#: templates/shipping-label.php:28
 msgid "To:"
 msgstr ""
 
-#: templates/shipping-label.php
+#: templates/shipping-label.php:34
 msgid "Order:"
 msgstr ""
