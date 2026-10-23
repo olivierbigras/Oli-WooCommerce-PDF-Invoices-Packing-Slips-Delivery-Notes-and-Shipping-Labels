@@ -56,8 +56,9 @@ oli_pdf_logo_assert( array( 120.0, 90.0 ) === $view, 'SVG viewBox dimensions' );
 $invoice_box = \Oli_PDF\Generator::get_logo_max_box( 'invoice' );
 $slip_box    = \Oli_PDF\Generator::get_logo_max_box( 'packing-slip' );
 $note_box    = \Oli_PDF\Generator::get_logo_max_box( 'delivery-note' );
+$label_box   = \Oli_PDF\Generator::get_logo_max_box( 'shipping-label' );
 oli_pdf_logo_assert( array( 200, 80 ) === $invoice_box, 'Invoice box is 200x80' );
-oli_pdf_logo_assert( array( 150, 80 ) === $slip_box && $slip_box === $note_box, 'Packing slip and delivery note boxes are 150x80' );
+oli_pdf_logo_assert( array( 150, 80 ) === $slip_box && $slip_box === $note_box && $slip_box === $label_box, 'Packing slip, delivery note, and label boxes are 150x80' );
 
 if ( $failures > 0 ) {
 	echo "\n$failures logo-fit test(s) failed.\n";

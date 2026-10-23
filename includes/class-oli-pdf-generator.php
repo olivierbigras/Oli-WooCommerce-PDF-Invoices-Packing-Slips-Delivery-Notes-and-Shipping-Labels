@@ -548,11 +548,8 @@ class Generator {
 	 * @return int[] { max_width, max_height }
 	 */
 	public static function get_logo_max_box( $type ) {
-		if ( in_array( $type, array( 'packing-slip', 'delivery-note' ), true ) ) {
+		if ( in_array( $type, array( 'packing-slip', 'delivery-note', 'shipping-label' ), true ) ) {
 			return array( 150, 80 );
-		}
-		if ( 'shipping-label' === $type ) {
-			return array( 90, 36 );
 		}
 		return array( 200, 80 );
 	}
