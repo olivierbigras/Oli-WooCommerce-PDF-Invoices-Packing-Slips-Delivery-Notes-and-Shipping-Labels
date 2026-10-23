@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Distribution zip via `tools/build-zip.sh` (`composer install --no-dev --optimize-autoloader` from the versioned lockfile): production `vendor/` (Dompdf 3.1.6), `LICENSE.txt` (GPLv2 or later), and `languages/` (`.pot` 0.1.4, `fr_FR.po`, compiled `.mo` and `.l10n.php`). Translations load on `init` only on WordPress older than 6.7; `phpcs.xml.dist` excludes `/vendor/*` and `/languages/*`.
+- `uninstall.php` deletes `oli_pdf_*` / leftover `olipdf_*` options and `uploads/oli-pdf-logos/`.
 
 ### Changed
 - Production dependency is `dompdf/dompdf` `^3.1.6`. The zip build no longer passes `--no-security-blocking`; `composer audit --no-dev --locked` must stay clean.
 - Logos are fitted from natural size (getimagesize / SVG viewBox) into 200×80 (invoice) or 150×80 (packing slip / delivery note / shipping label) without upscaling. Header clearfix replaces `overflow:hidden`; logos are not floated. Rasters larger than ~600px are downscaled via a WP intermediate or cached `wp_get_image_editor` result.
 - Admin View/Download buttons use complete translatable strings per document type (`View invoice`, …) instead of concatenating the slug.
 - `tools/build-zip.sh` compiles `.mo` / `.l10n.php` in the staging directory only.
+- Shipping-label logo sits in its own block above “From:”; the sheet no longer forces 100% heights (blank extra pages). Logo paths are confined with `realpath` to uploads or the plugin directory and png/jpg/jpeg/gif/webp/svg only. Changing the logo purges stale cache files.
 
 ## [0.1.3] - 2026-10-21
 

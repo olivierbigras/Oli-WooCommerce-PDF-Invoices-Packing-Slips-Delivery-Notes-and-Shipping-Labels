@@ -500,7 +500,76 @@ class Generator {
 	}
 
 	/**
+	 * Allowed logo file extensions.
+	 *
+	 * @return string[]
+	 */
+	public static function get_allowed_logo_extensions() {
+		return array( 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg' );
+	}
+
+	/**
+	 * Whether a path has an allowed image extension.
+	 *
+	 * @param string $path File path or URL.
+	 * @return bool
+	 */
+	public static function has_allowed_logo_extension( $path ) {
+		$ext = strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) );
+		return in_array( $ext, self::get_allowed_logo_extensions(), true );
+	}
+
+	/**
+	 * realpath must sit inside uploads or the plugin directory.
+	 *
+	 * @param string $path Candidate path (may contain ..).
+	 * @return string Normalized path or empty.
+	 */
+	public static function confine_local_image_path( $path ) {
+		if ( ! $path || ! self::has_allowed_logo_extension( $path ) ) {
+			return '';
+		}
+
+		$real = realpath( $path );
+		if ( ! $real || ! is_file( $real ) || ! is_readable( $real ) ) {
+			return '';
+		}
+
+		if ( ! self::has_allowed_logo_extension( $real ) ) {
+			return '';
+		}
+
+		$allowed = array();
+		$uploads = function_exists( 'wp_upload_dir' ) ? wp_upload_dir() : array();
+		if ( ! empty( $uploads['basedir'] ) ) {
+			$upload_root = realpath( $uploads['basedir'] );
+			if ( $upload_root ) {
+				$allowed[] = $upload_root;
+			}
+		}
+		if ( defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
+			$plugin_root = realpath( OLI_PDF_PLUGIN_DIR );
+			if ( $plugin_root ) {
+				$allowed[] = $plugin_root;
+			}
+		}
+
+		$normalized = str_replace( '\\', '/', $real );
+		foreach ( $allowed as $root ) {
+			$prefix = rtrim( str_replace( '\\', '/', $root ), '/' );
+			if ( $normalized === $prefix || 0 === strpos( $normalized, $prefix . '/' ) ) {
+				return $real;
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Resolve a media URL or attachment ID to a local file path.
+	 *
+	 * Rejects traversal (uploads/../../wp-config.php), files outside uploads
+	 * or the plugin directory, and non-image extensions.
 	 *
 	 * @param string|int $url_or_id URL or attachment ID.
 	 * @return string
@@ -508,19 +577,20 @@ class Generator {
 	public static function resolve_local_image_path( $url_or_id ) {
 		if ( is_numeric( $url_or_id ) ) {
 			$path = get_attached_file( (int) $url_or_id );
-			return $path ? $path : '';
+			return $path ? self::confine_local_image_path( $path ) : '';
 		}
 
 		$url = esc_url_raw( $url_or_id );
-		if ( ! $url ) {
+		if ( ! $url || ! self::has_allowed_logo_extension( $url ) ) {
 			return '';
 		}
 
 		$attachment_id = attachment_url_to_postid( $url );
 		if ( $attachment_id ) {
 			$path = get_attached_file( $attachment_id );
-			if ( $path && file_exists( $path ) ) {
-				return $path;
+			$safe = $path ? self::confine_local_image_path( $path ) : '';
+			if ( $safe ) {
+				return $safe;
 			}
 		}
 
@@ -528,12 +598,67 @@ class Generator {
 		if ( ! empty( $uploads['baseurl'] ) && 0 === strpos( $url, $uploads['baseurl'] ) ) {
 			$relative = str_replace( $uploads['baseurl'], '', $url );
 			$path     = trailingslashit( $uploads['basedir'] ) . ltrim( $relative, '/' );
-			if ( file_exists( $path ) ) {
-				return $path;
+			$safe     = self::confine_local_image_path( $path );
+			if ( $safe ) {
+				return $safe;
+			}
+		}
+
+		if ( defined( 'OLI_PDF_PLUGIN_URL' ) && OLI_PDF_PLUGIN_URL && 0 === strpos( $url, OLI_PDF_PLUGIN_URL ) && defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
+			$relative = str_replace( OLI_PDF_PLUGIN_URL, '', $url );
+			$path     = trailingslashit( OLI_PDF_PLUGIN_DIR ) . ltrim( $relative, '/' );
+			$safe     = self::confine_local_image_path( $path );
+			if ( $safe ) {
+				return $safe;
 			}
 		}
 
 		return '';
+	}
+
+	/**
+	 * Cache directory for downscaled logos (under uploads).
+	 *
+	 * @return string
+	 */
+	public static function get_logo_cache_dir() {
+		$uploads = function_exists( 'wp_upload_dir' ) ? wp_upload_dir() : array();
+		if ( empty( $uploads['basedir'] ) ) {
+			return '';
+		}
+		return trailingslashit( $uploads['basedir'] ) . 'oli-pdf-logos';
+	}
+
+	/**
+	 * Delete cached logo files. Optionally keep one current file.
+	 *
+	 * @param string $keep Absolute path to keep.
+	 */
+	public static function purge_logo_cache( $keep = '' ) {
+		$dir = self::get_logo_cache_dir();
+		if ( ! $dir || ! is_dir( $dir ) ) {
+			return;
+		}
+
+		$keep_real = $keep ? realpath( $keep ) : '';
+		$files     = glob( trailingslashit( $dir ) . 'logo-*' );
+		if ( ! $files ) {
+			return;
+		}
+
+		foreach ( $files as $file ) {
+			if ( ! is_file( $file ) ) {
+				continue;
+			}
+			if ( $keep_real && realpath( $file ) === $keep_real ) {
+				continue;
+			}
+			if ( function_exists( 'wp_delete_file' ) ) {
+				wp_delete_file( $file );
+			} else {
+				unlink( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- standalone / uninstall fallback.
+			}
+		}
 	}
 
 	/**
@@ -651,6 +776,7 @@ class Generator {
 
 		$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
 		if ( 'svg' === $ext ) {
+			self::purge_logo_cache();
 			return $path;
 		}
 
@@ -659,6 +785,7 @@ class Generator {
 			return $path;
 		}
 		if ( $size[0] <= self::LOGO_RASTER_MAX_EDGE && $size[1] <= self::LOGO_RASTER_MAX_EDGE ) {
+			self::purge_logo_cache();
 			return $path;
 		}
 
@@ -683,13 +810,13 @@ class Generator {
 			return $path;
 		}
 
-		$uploads = wp_upload_dir();
-		$cache   = trailingslashit( $uploads['basedir'] ) . 'oli-pdf-logos';
-		if ( ! wp_mkdir_p( $cache ) ) {
+		$cache = self::get_logo_cache_dir();
+		if ( ! $cache || ! wp_mkdir_p( $cache ) ) {
 			return $path;
 		}
 
 		$dest = trailingslashit( $cache ) . 'logo-' . md5( $path . '|' . (string) filesize( $path ) . '|' . (string) filemtime( $path ) ) . '.png';
+		self::purge_logo_cache( $dest );
 		if ( is_readable( $dest ) ) {
 			return $dest;
 		}

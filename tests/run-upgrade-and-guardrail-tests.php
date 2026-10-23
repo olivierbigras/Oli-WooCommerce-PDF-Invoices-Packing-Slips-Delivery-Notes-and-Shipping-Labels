@@ -199,6 +199,17 @@ $oli_pdf_admin = file_get_contents( dirname( __DIR__ ) . '/includes/class-oli-pd
 oli_pdf_guard_assert( false !== strpos( $oli_pdf_admin, "__( 'View invoice'" ), 'Admin uses a complete View invoice string' );
 oli_pdf_guard_assert( false === strpos( $oli_pdf_admin, 'View %s' ), 'Admin does not build View labels from a slug placeholder' );
 
+$oli_pdf_label = file_get_contents( dirname( __DIR__ ) . '/templates/shipping-label.php' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_label, 'oli-pdf-label-logo' ), 'Shipping label keeps the logo in its own block' );
+preg_match( '/oli-pdf-label-logo.*?oli-pdf-label-heading/s', $oli_pdf_label, $oli_pdf_label_order );
+oli_pdf_guard_assert( ! empty( $oli_pdf_label_order ), 'Shipping label renders the logo block above From:' );
+
+$oli_pdf_uninstall = file_get_contents( dirname( __DIR__ ) . '/uninstall.php' );
+oli_pdf_guard_assert( is_readable( dirname( __DIR__ ) . '/uninstall.php' ), 'uninstall.php exists' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_uninstall, 'WP_UNINSTALL_PLUGIN' ), 'uninstall.php requires WP_UNINSTALL_PLUGIN' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_uninstall, 'oli_pdf_' ) && false !== strpos( $oli_pdf_uninstall, 'olipdf_' ), 'uninstall.php deletes oli_pdf_ and olipdf_ options' );
+oli_pdf_guard_assert( false !== strpos( $oli_pdf_uninstall, 'oli-pdf-logos' ), 'uninstall.php removes the logo cache directory' );
+
 $oli_pdf_build = file_get_contents( dirname( __DIR__ ) . '/tools/build-zip.sh' );
 oli_pdf_guard_assert( false !== strpos( $oli_pdf_build, 'make-mo "$STAGE/languages"' ), 'build-zip compiles .mo in staging' );
 oli_pdf_guard_assert( false === strpos( $oli_pdf_build, 'make-mo "$ROOT/languages"' ), 'build-zip does not rewrite git-tracked languages/' );

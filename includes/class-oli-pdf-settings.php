@@ -21,6 +21,21 @@ class Settings {
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'update_option_oli_pdf_logo_url', array( $this, 'purge_logo_cache_on_change' ), 10, 2 );
+		add_action( 'add_option_oli_pdf_logo_url', array( $this, 'purge_logo_cache_on_change' ), 10, 2 );
+	}
+
+	/**
+	 * Drop cached logo rasters when the configured logo URL changes.
+	 *
+	 * @param mixed $old_value Previous value (update) or option name (add).
+	 * @param mixed $value     New value.
+	 */
+	public function purge_logo_cache_on_change( $old_value, $value ) {
+		if ( $old_value === $value ) {
+			return;
+		}
+		Generator::purge_logo_cache();
 	}
 
 	/**

@@ -9,6 +9,72 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
 
+if ( ! defined( 'OLI_PDF_PLUGIN_DIR' ) ) {
+	define( 'OLI_PDF_PLUGIN_DIR', dirname( __DIR__ ) . '/' );
+}
+
+$oli_pdf_test_uploads = sys_get_temp_dir() . '/oli-pdf-path-test';
+
+if ( ! function_exists( 'trailingslashit' ) ) {
+	/**
+	 * @param string $value Path.
+	 * @return string
+	 */
+	function trailingslashit( $value ) {
+		return rtrim( (string) $value, '/\\' ) . '/';
+	}
+}
+
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	/**
+	 * @param string $url URL.
+	 * @return string
+	 */
+	function esc_url_raw( $url ) {
+		return (string) $url;
+	}
+}
+
+if ( ! function_exists( 'attachment_url_to_postid' ) ) {
+	/**
+	 * @param string $url URL.
+	 * @return int
+	 */
+	function attachment_url_to_postid( $url ) {
+		return 0;
+	}
+}
+
+if ( ! function_exists( 'get_attached_file' ) ) {
+	/**
+	 * @param int $id Attachment ID.
+	 * @return string
+	 */
+	function get_attached_file( $id ) {
+		global $oli_pdf_test_uploads;
+		if ( 2 === (int) $id ) {
+			return dirname( $oli_pdf_test_uploads ) . '/wp-config.php';
+		}
+		if ( 1 === (int) $id ) {
+			return $oli_pdf_test_uploads . '/logo.png';
+		}
+		return '';
+	}
+}
+
+if ( ! function_exists( 'wp_upload_dir' ) ) {
+	/**
+	 * @return array
+	 */
+	function wp_upload_dir() {
+		global $oli_pdf_test_uploads;
+		return array(
+			'basedir' => $oli_pdf_test_uploads,
+			'baseurl' => 'https://example.test/wp-content/uploads',
+		);
+	}
+}
+
 $oli_pdf_autoload = dirname( __DIR__ ) . '/vendor/autoload.php';
 if ( is_readable( $oli_pdf_autoload ) ) {
 	require_once $oli_pdf_autoload;
@@ -59,6 +125,26 @@ $note_box    = \Oli_PDF\Generator::get_logo_max_box( 'delivery-note' );
 $label_box   = \Oli_PDF\Generator::get_logo_max_box( 'shipping-label' );
 oli_pdf_logo_assert( array( 200, 80 ) === $invoice_box, 'Invoice box is 200x80' );
 oli_pdf_logo_assert( array( 150, 80 ) === $slip_box && $slip_box === $note_box && $slip_box === $label_box, 'Packing slip, delivery note, and label boxes are 150x80' );
+
+$oli_pdf_path_root = dirname( $oli_pdf_test_uploads );
+if ( ! is_dir( $oli_pdf_test_uploads ) ) {
+	mkdir( $oli_pdf_test_uploads, 0777, true );
+}
+file_put_contents( $oli_pdf_path_root . '/wp-config.php', '<?php // secret' );
+file_put_contents( $oli_pdf_test_uploads . '/logo.png', 'png' );
+file_put_contents( $oli_pdf_test_uploads . '/evil.php', '<?php echo 1;' );
+
+$forbidden = \Oli_PDF\Generator::resolve_local_image_path( 'https://example.test/wp-content/uploads/../../wp-config.php' );
+oli_pdf_logo_assert( '' === $forbidden, 'Traversal uploads/../../wp-config.php is rejected' );
+
+$php_in_uploads = \Oli_PDF\Generator::resolve_local_image_path( 'https://example.test/wp-content/uploads/evil.php' );
+oli_pdf_logo_assert( '' === $php_in_uploads, 'Non-image extension in uploads is rejected' );
+
+$outside_id = \Oli_PDF\Generator::resolve_local_image_path( 2 );
+oli_pdf_logo_assert( '' === $outside_id, 'Attachment path outside uploads/plugin is rejected' );
+
+$allowed = \Oli_PDF\Generator::resolve_local_image_path( 'https://example.test/wp-content/uploads/logo.png' );
+oli_pdf_logo_assert( realpath( $oli_pdf_test_uploads . '/logo.png' ) === $allowed, 'Safe uploads PNG is accepted' );
 
 if ( $failures > 0 ) {
 	echo "\n$failures logo-fit test(s) failed.\n";

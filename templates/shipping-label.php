@@ -15,9 +15,11 @@ defined( 'ABSPATH' ) || exit;
 	$company_address = get_option( 'oli_pdf_company_address', '' );
 	?>
 <div class="oli-pdf-label">
+	<div class="oli-pdf-label-logo">
+		<?php \Oli_PDF\Generator::render_logo_img( 'shipping-label', $company_name ); ?>
+	</div>
 	<div class="oli-pdf-label-block">
 		<div class="oli-pdf-label-heading"><?php esc_html_e( 'From:', 'oli-pdf-invoices-packing-slips' ); ?></div>
-		<?php \Oli_PDF\Generator::render_logo_img( 'shipping-label', $company_name ); ?>
 		<?php if ( $company_name ) : ?>
 			<strong><?php echo esc_html( $company_name ); ?></strong><br>
 		<?php endif; ?>
